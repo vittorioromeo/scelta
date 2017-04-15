@@ -22,6 +22,10 @@ namespace scelta::impl
     {
         using type = variant_homogenizer<Variant>;
     };
+
+    template <typename T>
+    using variant_homogenizer_helper_t =
+        typename variant_homogenizer_helper<T>::type;
 }
 
 #define SCELTA_DEFINE_VARIANT_HOMOGENIZER(m_type, m_function) \
