@@ -5,8 +5,10 @@
 
 #pragma once
 
+// clang-format off
 // Usage of C++17: `__has_include`.
 #if __has_include(<eggs/variant.hpp>)
+// clang-format on
 
 #include "../utils/variant_homogenizer.hpp"
 #include <eggs/variant.hpp>
