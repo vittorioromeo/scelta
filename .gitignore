@@ -1,3 +1,7 @@
+.clang-format
+.clang_complete
+.vscode
+
 # Compiled Object files
 *.slo
 *.lo
@@ -15,7 +19,6 @@
 
 # Fortran module files
 *.mod
-*.smod
 
 # Compiled Static libraries
 *.lai
@@ -27,3 +30,20 @@
 *.exe
 *.out
 *.app
+
+build/
+*/build/
+extlibs/*
+*/extlibs/*
+*.user
+project/extlibs/*
+
+*.callgrind*
+
+**/*.callgrind*
+/**/*.callgrind.out.*
+./**/*.callgrind.out.*
+
+**callgrind.*db
+db-wal
+db
