@@ -10,25 +10,10 @@
 #if __has_include(<eggs/variant.hpp>)
 // clang-format on
 
-#include "../utils/variant_homogenizer.hpp"
+#include "../../utils/homogenizer.hpp"
 #include <eggs/variant.hpp>
 
-#define SCELTA_SUPPORT_EGGS_VARIANT 1
-
-SCELTA_DEFINE_VARIANT_HOMOGENIZER(::eggs::variant, ::eggs::variants::apply)
-
-// Usage of C++17: nested `namespace`.
-namespace scelta::support
-{
-    constexpr bool eggs{true};
-}
-
-#else
-
-// Usage of C++17: nested `namespace`.
-namespace scelta::support
-{
-    constexpr bool eggs{false};
-}
+#define SCELTA_SUPPORT_VARIANT_EGGS 1
+SCELTA_DEFINE_HOMOGENIZER_VARIANT(::eggs::variant, ::eggs::variants::apply)
 
 #endif

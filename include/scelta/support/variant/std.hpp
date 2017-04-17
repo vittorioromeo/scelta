@@ -11,25 +11,10 @@
 // clang-format on
 
 // Usage of C++17: `<variant>`.
-#include "../utils/variant_homogenizer.hpp"
+#include "../../utils/homogenizer.hpp"
 #include <variant>
 
-#define SCELTA_SUPPORT_STD_VARIANT 1
-
-SCELTA_DEFINE_VARIANT_HOMOGENIZER(::std::variant, ::std::visit)
-
-// Usage of C++17: nested `namespace`.
-namespace scelta::support
-{
-    constexpr bool std{true};
-}
-
-#else
-
-// Usage of C++17: nested `namespace`.
-namespace scelta::support
-{
-    constexpr bool std{false};
-}
+#define SCELTA_SUPPORT_VARIANT_STD 1
+SCELTA_DEFINE_HOMOGENIZER_VARIANT(::std::variant, ::std::visit)
 
 #endif

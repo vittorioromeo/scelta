@@ -5,5 +5,6 @@
 
 #pragma once
 
-#include "./support/variant.hpp"
-#include "./support/optional.hpp"
+#include "./variant/std.hpp"
+#include "./variant/boost.hpp"
+#include "./variant/eggs.hpp"

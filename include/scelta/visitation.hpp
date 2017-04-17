@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include "./variant/visit.hpp"
-#include "./variant/match.hpp"
+#include "./visitation/visit.hpp"
+#include "./visitation/match.hpp"

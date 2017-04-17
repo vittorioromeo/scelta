@@ -1,0 +1,38 @@
+#include "../test_utils.hpp"
+#include "../variant_test_utils.hpp"
+#include <scelta/visitation.hpp>
+
+TEST_MAIN()
+{
+    using namespace test;
+
+    using null = scelta::nullopt_t;
+
+    // clang-format off
+    with_all_optional_implementations<int>( //
+        [](auto make)                       //
+        {
+            {
+                auto f = scelta::match(     //
+                    [](null) { return 0; }, //
+                    [](int)  { return 1; });
+
+                EXPECT_EQ(f(make()),  0);
+                EXPECT_EQ(f(make(0)), 1);
+            }
+
+            {
+                auto f = scelta::match(           //
+                    [](null, null) { return 0; }, //
+                    [](null, int)  { return 1; }, //
+                    [](int,  null) { return 2; }, //
+                    [](int,  int)  { return 3; });
+
+                EXPECT_EQ(f(make(),  make()),  0);
+                EXPECT_EQ(f(make(),  make(0)), 1);
+                EXPECT_EQ(f(make(0), make()),  2);
+                EXPECT_EQ(f(make(0), make(0)), 3);
+               }
+        });
+    // clang-format on
+}

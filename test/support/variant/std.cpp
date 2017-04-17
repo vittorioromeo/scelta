@@ -3,14 +3,12 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include "../test_utils.hpp"
-#include <scelta/support/eggs.hpp>
+#include "../../test_utils.hpp"
+#include <scelta/support/variant/std.hpp>
 
 TEST_MAIN()
 {
-#if defined(SCELTA_SUPPORT_EGGS_VARIANT)
-    static_assert(scelta::support::eggs);
-#else
-    static_assert(!scelta::support::eggs);
+#if defined(SCELTA_SUPPORT_STD_VARIANT)
+    static_assert(scelta::impl::is_supported_variant_template_v<::std::variant>);
 #endif
 }

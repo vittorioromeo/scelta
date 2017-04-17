@@ -3,14 +3,12 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include "../test_utils.hpp"
-#include <scelta/support/std.hpp>
+#include "../../test_utils.hpp"
+#include <scelta/support/variant/boost.hpp>
 
 TEST_MAIN()
 {
 #if defined(SCELTA_SUPPORT_STD_VARIANT)
-    static_assert(scelta::support::std);
-#else
-    static_assert(!scelta::support::std);
+    static_assert(scelta::impl::is_supported_variant_template_v<::boost::variant>);
 #endif
 }

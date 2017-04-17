@@ -5,39 +5,41 @@
 
 #pragma once
 
+#include "./optional_utils.hpp"
 #include "./returns.hpp"
+#include <type_traits>
 
 // Usage of C++17: nested `namespace`.
 namespace scelta::impl
 {
     // Usage of C++17: `template <...> typename`.
     template <template <typename...> typename>
-    struct variant_homogenizer;
+    struct homogenizer;
 
     template <typename>
-    struct variant_homogenizer_helper;
+    struct homogenizer_helper;
 
     template <template <typename...> class Variant, typename... Ts>
-    struct variant_homogenizer_helper<Variant<Ts...>>
+    struct homogenizer_helper<Variant<Ts...>>
     {
-        using type = variant_homogenizer<Variant>;
+        using type = homogenizer<Variant>;
     };
 
     template <typename T>
-    using variant_homogenizer_helper_t =
-        typename variant_homogenizer_helper<T>::type;
+    using homogenizer_helper_t = typename homogenizer_helper<T>::type;
 }
 
-#define SCELTA_DEFINE_VARIANT_HOMOGENIZER(m_type, m_function) \
+#define SCELTA_DEFINE_HOMOGENIZER_VARIANT(m_type, m_function) \
     namespace scelta::impl                                    \
     {                                                         \
         template <>                                           \
-        struct variant_homogenizer<m_type>                    \
+        struct homogenizer<m_type>                            \
         {                                                     \
-            static constexpr const char* name{#m_type};       \
-                                                              \
             template <typename... Ts>                         \
             constexpr auto operator()(Ts&&... xs) const       \
                 SCELTA_RETURNS(m_function(FWD(xs)...))        \
         };                                                    \
     }
+
+#define SCELTA_DEFINE_HOMOGENIZER_OPTIONAL(m_type) \
+    SCELTA_DEFINE_HOMOGENIZER_VARIANT(m_type, visit_optional)
