@@ -13,17 +13,19 @@ namespace scelta
     struct nullopt_t
     {
     };
+
+    inline constexpr nullopt_t nullopt{};
 }
 
 namespace scelta::impl
 {
-    template <typename... Ts>
-    constexpr scelta::nullopt_t to_nullopt(Ts&&...) noexcept
-    {
-        return {};
-    }
-
     // clang-format off
+    template <typename... Ts>
+    constexpr auto to_nullopt(Ts&&...) 
+        SCELTA_RETURNS(
+            ::scelta::nullopt
+        )
+
     template <typename Visitor>
     constexpr auto visit_optional(Visitor&& visitor)
         SCELTA_RETURNS(
