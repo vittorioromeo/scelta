@@ -27,6 +27,16 @@ namespace scelta::impl
 
     template <typename T>
     using homogenizer_helper_t = typename homogenizer_helper<T>::type;
+
+    // clang-format off
+    template <typename Visitor, typename Variant, typename... Variants>
+    constexpr auto visit_homogenizer(
+        Visitor&& visitor, Variant&& variant, Variants&&... variants)
+        SCELTA_RETURNS(
+            homogenizer_helper_t<std::decay_t<Variant>>{}(
+                FWD(visitor), FWD(variant), FWD(variants)...)
+        )
+    // clang-format on
 }
 
 #define SCELTA_DEFINE_HOMOGENIZER_VARIANT(m_type, m_function) \

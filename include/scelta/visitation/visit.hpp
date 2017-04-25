@@ -18,7 +18,7 @@ namespace scelta
     constexpr auto visit(
         Visitor&& visitor, Variant&& variant, Variants&&... variants)
         SCELTA_RETURNS(
-            impl::homogenizer_helper_t<std::decay_t<Variant>>{}(
+            impl::visit_homogenizer(
                 FWD(visitor), FWD(variant), FWD(variants)...)
         )
     // clang-format on

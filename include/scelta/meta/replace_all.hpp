@@ -20,9 +20,9 @@ namespace scelta::meta
 
     // Usage of C++17: `template <...> typename`.
     template <typename Before, typename After,
-        template <typename...> typename Template, typename... Ts>
-    struct replace_all<Before, After, Template<Ts...>>
+        template <typename...> typename T, typename... Ts>
+    struct replace_all<Before, After, T<Ts...>>
     {
-        using type = Template<replace_all_t<Before, After, Ts>...>;
+        using type = T<replace_all_t<Before, After, Ts>...>;
     };
 }

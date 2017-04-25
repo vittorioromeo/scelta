@@ -158,12 +158,10 @@ namespace test_impl
 #define EXPECT_OP(lhs, op, rhs)                                                \
     do                                                                         \
     {                                                                          \
-        using ct = std::common_type_t<decltype(lhs), decltype(rhs)>;           \
-                                                                               \
         auto _t_xl(lhs);                                                       \
         auto _t_xr(rhs);                                                       \
                                                                                \
-        auto _t_x(ct(_t_xl) op ct(_t_xr));                                     \
+        auto _t_x((_t_xl) op (_t_xr));                                         \
                                                                                \
         test_impl::test_op(__LINE__, _t_x, _t_xl, _t_xr, #lhs #op #rhs, #rhs); \
     } while(false)
