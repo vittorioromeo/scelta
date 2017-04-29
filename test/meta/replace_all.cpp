@@ -40,4 +40,17 @@ TEST_MAIN()
 
     SA_SAME((scelta::meta::replace_all_t<A, B, bag<A, bag<A, A, bag<A, A>>>>),
         (bag<B, bag<B, B, bag<B, B>>>));
+
+    // Pointers/refs/qualifiers are not implicitly replaced
+    SA_NOT_SAME((scelta::meta::replace_all_t<A, B, bag<A*>>), (bag<B*>));
+    SA_NOT_SAME((scelta::meta::replace_all_t<A, B, bag<A&>>), (bag<B&>));
+    SA_NOT_SAME((scelta::meta::replace_all_t<A, B, bag<const A>>), (bag<const B>));
+
+    SA_SAME((scelta::meta::replace_all_t<A*, B*, bag<A*>>), (bag<B*>));
+    SA_SAME((scelta::meta::replace_all_t<const A, const B, bag<const A>>), (bag<const B>));
+
+    SA_SAME((scelta::meta::wip::ra_cv_t<A, B, bag<A*>>), (bag<B*>));
+    SA_SAME((scelta::meta::wip::ra_cv_t<A, B, bag<A&>>), (bag<B&>));
+    SA_SAME((scelta::meta::wip::ra_cv_t<A, B, bag<const A>>), (bag<const B>));
+
 }

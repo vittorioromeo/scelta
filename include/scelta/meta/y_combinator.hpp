@@ -15,13 +15,13 @@ namespace scelta::meta
     namespace impl
     {
         template <typename F>
-        struct function_reference_wrapper
+        struct fn_ref_wrapper
         {
             static_assert(std::is_reference_v<F>);
 
             F _f;
 
-            constexpr function_reference_wrapper(F f) noexcept : _f{f}
+            constexpr fn_ref_wrapper(F f) noexcept : _f{f}
             {
             }
 
@@ -48,13 +48,11 @@ namespace scelta::meta
     template <typename... Ts>                                                 \
     constexpr auto operator()(Ts&&... xs) m_ref_qualifier                     \
     SCELTA_NOEXCEPT_AND_TRT(std::declval<F m_ref_qualifier>()(                \
-        std::declval<function_reference_wrapper<                              \
-            y_combinator_wrapper m_ref_qualifier>>(),                         \
+        std::declval<fn_ref_wrapper<y_combinator_wrapper m_ref_qualifier>>(), \
         FWD(xs)...))                                                          \
     {                                                                         \
         return static_cast<F m_ref_qualifier>(*this)(                         \
-            function_reference_wrapper<y_combinator_wrapper m_ref_qualifier>{ \
-                *this},                                                       \
+            fn_ref_wrapper<y_combinator_wrapper m_ref_qualifier>{*this},      \
             FWD(xs)...);                                                      \
     }
 

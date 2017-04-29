@@ -6,8 +6,8 @@
 #pragma once
 
 #include "../meta/forward_like.hpp"
-#include "../meta/y_combinator.hpp"
 #include "../meta/replace_all.hpp"
+#include "../meta/y_combinator.hpp"
 #include "../utils/fwd.hpp"
 #include "../utils/returns.hpp"
 #include "../visitation/visit.hpp"
@@ -47,11 +47,29 @@ namespace scelta::recursive
             {
             }
 
+            // TODO: type deduction fails here for boost::variant
             template <typename... Ts>
             constexpr auto operator()(Ts&&... xs) SCELTA_NOEXCEPT_AND_TRT(
                 std::declval<F&>()(std::declval<recursor_type&&>(), FWD(xs)...))
             {
                 return static_cast<F&>(*this)(recursor_type{*this}, FWD(xs)...);
+            }
+
+#define PRODUCE_ERROR_TODO(str)                \
+    do                                         \
+    {                                          \
+        [](auto x) constexpr                   \
+        {                                      \
+            static_assert(decltype(x){}, str); \
+        }                                      \
+        (std::false_type{});                   \
+    } while(false)
+
+
+            constexpr auto operator()(...)
+            {
+                PRODUCE_ERROR_TODO(
+                    "Could not deduce recursive visitation return type.");
             }
         };
     }

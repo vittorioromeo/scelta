@@ -25,6 +25,10 @@
     static_assert(           \
         std::is_same<TEST_IMPL_DEPARENS value, TEST_IMPL_DEPARENS type>{}, "")
 
+#define SA_NOT_SAME(value, type) \
+    static_assert(           \
+        !std::is_same<TEST_IMPL_DEPARENS value, TEST_IMPL_DEPARENS type>{}, "")
+
 #define SA_TYPE(value, type) \
     static_assert(std::is_same<decltype value, TEST_IMPL_DEPARENS type>{}, "")
 
