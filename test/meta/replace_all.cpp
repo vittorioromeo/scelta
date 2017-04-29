@@ -51,7 +51,7 @@ TEST_MAIN()
     SA_SAME((replace_all_t<const A, const B, bag<const A>>), (bag<const B>));
 
     // TODO: document move use in recursive
-    SA_SAME((wip::ra_cv_t<A, B, bag<A*>>), (bag<B*>));
-    SA_SAME((wip::ra_cv_t<A, B, bag<A&>>), (bag<B&>));
-    SA_SAME((wip::ra_cv_t<A, B, bag<const A>>), (bag<const B>));
+    SA_SAME((replace_all_copy_cv_ptr_ref_t<A, B, bag<A*>>), (bag<B*>));
+    SA_SAME((replace_all_copy_cv_ptr_ref_t<A, B, bag<A&>>), (bag<B&>));
+    SA_SAME((replace_all_copy_cv_ptr_ref_t<A, B, bag<const A>>), (bag<const B>));
 }

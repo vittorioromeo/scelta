@@ -55,13 +55,9 @@ namespace scelta::recursive
 
     namespace impl
     {
-        // TODO: doesn't work generically - const, volatile, ptrs, ...
         template <typename After, typename T>
         using replace_placeholders = //
-            meta::replace_all_t<placeholder, After,
-                meta::replace_all_t<placeholder*, After*,
-                    meta::replace_all_t<placeholder&, After&,
-                        meta::replace_all_t<placeholder&&, After&&, T>>>>;
+            meta::replace_all_copy_cv_ptr_ref_t<placeholder, After, T>;
     }
 
     template <typename>

@@ -88,19 +88,34 @@ namespace scelta::recursive
                 FWD(visitor), FWD(variant), FWD(variants)...)
         )
 
+    namespace impl
+    {
+
+        
+        // clang-format off
+        template <typename... Fs>
+        constexpr auto make_recursive_visitor(Fs&&... fs)
+            SCELTA_RETURNS(
+                impl::recursive_visitor<decltype(overload(FWD(fs)...))>{overload(FWD(fs)...)}
+            )
+    }
+    // clang-format on
+    /*
+        template <typename... Fs>
+        constexpr auto match(Fs&&... fs)
+            SCELTA_RETURNS(impl::recursive_visitor<decltype(overload(FWD(fs)...))>{
+                overload(FWD(fs)...)})
+    */
     template <typename... Fs>
     constexpr auto match(Fs&&... fs)
     {
-        //return meta::y_combinator(
+        // return meta::y_combinator(
         // clang-format on
 
-
-        auto o = overload(FWD(fs)...);
-        auto rv = impl::recursive_visitor<decltype(o)>{std::move(o)};
-
-        return [rv = std::move(rv)](auto&&... vs) mutable->decltype(auto)
+        return [rv = impl::make_recursive_visitor(FWD(fs)...)](
+            auto&&... vs) mutable->decltype(auto)
         {
-            return scelta::visit(rv, FWD(vs)...);
+            return ::scelta::visit(rv, FWD(vs)...);
         };
     }
 }

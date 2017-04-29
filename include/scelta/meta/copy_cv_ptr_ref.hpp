@@ -16,7 +16,6 @@ namespace scelta::meta
     using remove_cv_ref_ptr_t =
         std::remove_pointer_t<std::remove_cv_t<std::remove_reference_t<T>>>;
 
-
     template <typename Source, typename T>
     using copy_lvalue_reference_t =
         std::conditional_t<std::is_lvalue_reference_v<Source>,

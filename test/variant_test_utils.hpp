@@ -55,12 +55,12 @@ namespace test
         f(impl::maker_t<v_std>{});
 #endif
 
-#if 0&& defined(SCELTA_SUPPORT_VARIANT_BOOST)
+#if defined(SCELTA_SUPPORT_VARIANT_BOOST)
         using v_boost = typename helper::template apply<boost::variant>;
         f(impl::maker_t<v_boost>{});
 #endif
 
-#if 0&& defined(SCELTA_SUPPORT_VARIANT_EGGS)
+#if defined(SCELTA_SUPPORT_VARIANT_EGGS)
         using v_eggs = typename helper::template apply<eggs::variant>;
         f(impl::maker_t<v_eggs>{});
 #endif
