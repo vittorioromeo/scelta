@@ -21,36 +21,37 @@ struct bag
 
 TEST_MAIN()
 {
+    using namespace scelta::meta;
+
     // Sanity checks.
     SA_SAME((A), (A));
     SA_SAME((B), (B));
     SA_SAME((bag<>), (bag<>));
 
-    SA_SAME((scelta::meta::replace_all_t<A, B, bag<>>), (bag<>));
-    SA_SAME((scelta::meta::replace_all_t<A, B, bag<A>>), (bag<B>));
-    SA_SAME((scelta::meta::replace_all_t<A, B, bag<B>>), (bag<B>));
+    SA_SAME((replace_all_t<A, B, bag<>>), (bag<>));
+    SA_SAME((replace_all_t<A, B, bag<A>>), (bag<B>));
+    SA_SAME((replace_all_t<A, B, bag<B>>), (bag<B>));
 
-    SA_SAME((scelta::meta::replace_all_t<A, B, bag<A, A>>), (bag<B, B>));
-    SA_SAME((scelta::meta::replace_all_t<A, B, bag<B, A>>), (bag<B, B>));
+    SA_SAME((replace_all_t<A, B, bag<A, A>>), (bag<B, B>));
+    SA_SAME((replace_all_t<A, B, bag<B, A>>), (bag<B, B>));
 
-    SA_SAME(
-        (scelta::meta::replace_all_t<A, B, bag<A, bag<A>>>), (bag<B, bag<B>>));
-    SA_SAME((scelta::meta::replace_all_t<A, B, bag<A, bag<A, bag<A>>>>),
+    SA_SAME((replace_all_t<A, B, bag<A, bag<A>>>), (bag<B, bag<B>>));
+    SA_SAME((replace_all_t<A, B, bag<A, bag<A, bag<A>>>>),
         (bag<B, bag<B, bag<B>>>));
 
-    SA_SAME((scelta::meta::replace_all_t<A, B, bag<A, bag<A, A, bag<A, A>>>>),
+    SA_SAME((replace_all_t<A, B, bag<A, bag<A, A, bag<A, A>>>>),
         (bag<B, bag<B, B, bag<B, B>>>));
 
     // Pointers/refs/qualifiers are not implicitly replaced
-    SA_NOT_SAME((scelta::meta::replace_all_t<A, B, bag<A*>>), (bag<B*>));
-    SA_NOT_SAME((scelta::meta::replace_all_t<A, B, bag<A&>>), (bag<B&>));
-    SA_NOT_SAME((scelta::meta::replace_all_t<A, B, bag<const A>>), (bag<const B>));
+    SA_NOT_SAME((replace_all_t<A, B, bag<A*>>), (bag<B*>));
+    SA_NOT_SAME((replace_all_t<A, B, bag<A&>>), (bag<B&>));
+    SA_NOT_SAME((replace_all_t<A, B, bag<const A>>), (bag<const B>));
 
-    SA_SAME((scelta::meta::replace_all_t<A*, B*, bag<A*>>), (bag<B*>));
-    SA_SAME((scelta::meta::replace_all_t<const A, const B, bag<const A>>), (bag<const B>));
+    SA_SAME((replace_all_t<A*, B*, bag<A*>>), (bag<B*>));
+    SA_SAME((replace_all_t<const A, const B, bag<const A>>), (bag<const B>));
 
-    SA_SAME((scelta::meta::wip::ra_cv_t<A, B, bag<A*>>), (bag<B*>));
-    SA_SAME((scelta::meta::wip::ra_cv_t<A, B, bag<A&>>), (bag<B&>));
-    SA_SAME((scelta::meta::wip::ra_cv_t<A, B, bag<const A>>), (bag<const B>));
-
+    // TODO: document move use in recursive
+    SA_SAME((wip::ra_cv_t<A, B, bag<A*>>), (bag<B*>));
+    SA_SAME((wip::ra_cv_t<A, B, bag<A&>>), (bag<B&>));
+    SA_SAME((wip::ra_cv_t<A, B, bag<const A>>), (bag<const B>));
 }
