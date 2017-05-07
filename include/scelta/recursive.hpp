@@ -8,3 +8,4 @@
 #include "./recursive/builder.hpp"
 #include "./recursive/placeholder.hpp"
 #include "./recursive/visit.hpp"
+#include "./recursive/match.hpp"
