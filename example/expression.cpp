@@ -37,6 +37,12 @@ namespace impl
 using base_expr = impl::type;
 using recr_expr = impl::resolved_recr_expr;
 
+template <typename Op, typename Rest>
+auto recr(num x, Op op, Rest&& rest)
+{
+    return std::make_unique<recr_expr>(x, op, FWD(rest));
+}
+
 int main()
 {
 }
