@@ -32,7 +32,7 @@ TEST_MAIN()
                 EXPECT_EQ(f(make(),  make(0)), 1);
                 EXPECT_EQ(f(make(0), make()),  2);
                 EXPECT_EQ(f(make(0), make(0)), 3);
-               }
+            }
         });
     // clang-format on
 }

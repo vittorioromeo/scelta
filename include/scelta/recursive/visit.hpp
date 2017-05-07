@@ -13,16 +13,6 @@
 #include "../visitation/visit.hpp"
 #include <type_traits>
 
-#define PRODUCE_ERROR_TODO(str)                \
-    do                                         \
-    {                                          \
-        [](auto x) constexpr                   \
-        {                                      \
-            static_assert(decltype(x){}, str); \
-        }                                      \
-        (std::false_type{});                   \
-    } while(false)
-
 namespace scelta::recursive
 {
     namespace impl

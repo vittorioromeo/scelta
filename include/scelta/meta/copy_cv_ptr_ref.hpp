@@ -3,8 +3,6 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-// TODO: docs refactoring etc
-
 #pragma once
 
 #include <type_traits>

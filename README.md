@@ -77,7 +77,7 @@ After defining recursive structures, *in place recursive visitation* is also pos
 ```cpp
 int_tree t0{/*...*/};
 
-scelta::recursive::match(
+scelta::recursive::match<return_type>(
     // Base case.
     [](auto, int x){ cout << x; },
 

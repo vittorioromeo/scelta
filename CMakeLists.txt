@@ -39,6 +39,7 @@ vrm_check_target()
 
 # Setup subdirectories.
 add_subdirectory(test)
+add_subdirectory(example)
 
 # Create header-only install target (automatically glob)
 vrm_cmake_header_only_install_glob("${SCELTA_INC_DIR}" "include")

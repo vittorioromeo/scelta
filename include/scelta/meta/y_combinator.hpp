@@ -21,8 +21,7 @@ namespace scelta::meta
 
             F _f;
 
-            template <typename FFwd>
-            constexpr fn_ref_wrapper(FFwd&& f) noexcept : _f{FWD(f)}
+            constexpr fn_ref_wrapper(F f) noexcept : _f{FWD(f)}
             {
             }
 
@@ -45,17 +44,17 @@ namespace scelta::meta
             {
             }
 
-#define DEFINE_CALL_OPERATOR(m_ref_qualifier)                                 \
-    template <typename... Ts>                                                 \
-    constexpr auto operator()(Ts&&... xs) m_ref_qualifier                     \
-    SCELTA_NOEXCEPT_AND_TRT(std::declval<F m_ref_qualifier>()(                \
-        std::declval<fn_ref_wrapper<y_combinator_wrapper m_ref_qualifier>>(), \
-        FWD(xs)...))                                                          \
-    {                                                                         \
-        return static_cast<F m_ref_qualifier>(*this)(                         \
-            fn_ref_wrapper<y_combinator_wrapper m_ref_qualifier>{             \
-                static_cast<y_combinator_wrapper m_ref_qualifier>(*this)},    \
-            FWD(xs)...);                                                      \
+#define DEFINE_CALL_OPERATOR(m_refq)                                      \
+    template <typename... Ts>                                             \
+    constexpr auto operator()(Ts&&... xs) m_refq SCELTA_NOEXCEPT_AND_TRT( \
+        std::declval<F m_refq>()(                                         \
+            std::declval<fn_ref_wrapper<y_combinator_wrapper m_refq>>(),  \
+            FWD(xs)...))                                                  \
+    {                                                                     \
+        return static_cast<F m_refq>(*this)(                              \
+            fn_ref_wrapper<y_combinator_wrapper m_refq>{                  \
+                static_cast<y_combinator_wrapper m_refq>(*this)},         \
+            FWD(xs)...);                                                  \
     }
 
             DEFINE_CALL_OPERATOR(&)

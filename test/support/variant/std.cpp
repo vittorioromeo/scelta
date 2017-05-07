@@ -8,7 +8,7 @@
 
 TEST_MAIN()
 {
-#if defined(SCELTA_SUPPORT_STD_VARIANT)
+#if defined(SCELTA_SUPPORT_VARIANT_STD)
     static_assert(scelta::impl::is_supported_variant_template_v<::std::variant>);
 #endif
 }
