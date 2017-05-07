@@ -13,11 +13,13 @@ namespace example
     template <typename... Ts>
     using variant =
 #if defined(SCELTA_SUPPORT_VARIANT_STD)
-        std::variant
+        ::std::variant
 #elif defined(SCELTA_SUPPORT_VARIANT_BOOST)
-        boost::variant
+        ::boost::variant
 #elif defined(SCELTA_SUPPORT_VARIANT_EGGS)
-        eggs::variant
+        ::eggs::variant
+#elif defined(SCELTA_SUPPORT_VARIANT_MPARK)
+        ::mpark::variant
 #else
 #error "No variant type available."
 #endif
@@ -28,9 +30,9 @@ namespace example
     template <typename... Ts>
     using optional =
 #if defined(SCELTA_SUPPORT_OPTIONAL_STD)
-        std::optional
+        ::std::optional
 #elif defined(SCELTA_SUPPORT_OPTIONAL_BOOST)
-        boost::optional
+        ::boost::optional
 #else
 #error "No optional type available."
 #endif
