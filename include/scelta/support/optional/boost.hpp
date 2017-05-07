@@ -7,7 +7,6 @@
 
 // Usage of C++17: `__has_include`.
 #if __has_include(<boost/optional.hpp>) && __has_include(<boost/none.hpp>)
-// clang-format on
 
 #include "../../utils/optional_utils.hpp"
 #include <boost/optional.hpp>

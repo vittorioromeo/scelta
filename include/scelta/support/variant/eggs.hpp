@@ -7,7 +7,6 @@
 
 // Usage of C++17: `__has_include`.
 #if __has_include(<eggs/variant.hpp>)
-// clang-format on
 
 #include "../../utils/homogenizer.hpp"
 #include <eggs/variant.hpp>
