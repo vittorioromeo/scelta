@@ -14,21 +14,21 @@ TEST_MAIN()
         [](auto make)
         {
             {
-auto v = scelta::recursive::impl::make_recursive_visitor(
-                                  [](auto, int) ->int{ return 0; },
-                                  [](auto, char)->int{ return 1; });
+                auto v = scelta::recursive::impl::make_recursive_visitor<int>(
+                                  [](auto, int) { return 0; },
+                                  [](auto, char){ return 1; });
 
-auto vt = make(0);
-                EXPECT_EQ(scelta::recursive::visit(v, vt), 0);
+                auto vt = make(0);
+                EXPECT_EQ(scelta::recursive::visit<int>(v, vt), 0);
             }
 
             {
-auto v = scelta::recursive::impl::make_recursive_visitor(
-                                  [](auto, int) ->int{ return 0; },
-                                  [](auto, char)->int{ return 1; });
+                auto v = scelta::recursive::impl::make_recursive_visitor<int>(
+                                  [](auto, int) { return 0; },
+                                  [](auto, char){ return 1; });
 
-auto vt = make('a');
-                EXPECT_EQ(scelta::recursive::visit(v, vt), 1);
+                auto vt = make('a');
+                EXPECT_EQ(scelta::recursive::visit<int>(v, vt), 1);
             }
         }
     );

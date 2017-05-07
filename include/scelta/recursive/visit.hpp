@@ -13,48 +13,6 @@
 #include "../visitation/visit.hpp"
 #include <type_traits>
 
-namespace scelta::recursive
-{
-    namespace impl
-    {
-        template <typename Visitor>
-        struct recursor
-        {
-            Visitor& _visitor;
-
-            constexpr recursor(Visitor& visitor) noexcept : _visitor{visitor}
-            {
-            }
-
-            // clang-format off
-            template <typename... Ts>
-            constexpr auto operator()(Ts&&... xs) 
-                SCELTA_RETURNS(
-                    ::scelta::visit(_visitor, FWD(xs)...)
-                )
-            // clang-format on
-        };
-
-        template <typename F>
-        struct recursive_visitor : F
-        {
-            using this_type = recursive_visitor<F>;
-            using recursor_type = recursor<this_type>;
-
-            template <typename FFwd>
-            constexpr recursive_visitor(FFwd&& f) noexcept(noexcept(F{FWD(f)}))
-                : F{FWD(f)}
-            {
-            }
-
-            // TODO: type deduction fails here for boost::variant
-            template <typename... Ts>
-            constexpr auto operator()(Ts&&... xs) SCELTA_NOEXCEPT_AND_TRT(
-                std::declval<F&>()(std::declval<recursor_type&&>(), FWD(xs)...))
-            {
-                return static_cast<F&>(*this)(recursor_type{*this}, FWD(xs)...);
-            }
-
 #define PRODUCE_ERROR_TODO(str)                \
     do                                         \
     {                                          \
@@ -65,57 +23,104 @@ namespace scelta::recursive
         (std::false_type{});                   \
     } while(false)
 
+namespace scelta::recursive
+{
+    namespace impl
+    {
+        template <typename T, typename = void>
+        struct original_type
+        {
+            using type = T;
+        };
 
-            constexpr auto operator()(...)
+        template <typename T>
+        struct original_type<T, std::void_t<typename T::base_type>>
+        {
+            using type = typename T::base_type;
+        };
+
+        // Evaluates to `T` if `T::base_type` does not exist, otherwise
+        // evaluates to `T::base_type`. Used to retrieve the "original"
+        // visitable type from a recursive wrapper.
+        template <typename T>
+        using original_type_t = typename original_type<T>::type;
+    }
+
+    // Recursive visitation: currently an alias for non-recursive
+    // visitation.
+    // This may change if recursive data structures are represented in a
+    // different way (e.g. data member instead of inheritance).
+    template <typename Return, typename Visitor, typename... Variants>
+    constexpr Return visit(Visitor&& visitor, Variants&&... variants)
+    {
+        return ::scelta::visit(FWD(visitor),
+            static_cast<meta::copy_cv_ptr_ref_t<Variants&&,
+                impl::original_type_t<std::decay_t<Variants>>>>(variants)...);
+    }
+
+    namespace impl
+    {
+        template <typename Return, typename Visitor>
+        struct recursor
+        {
+            Visitor& _visitor;
+
+            constexpr recursor(Visitor& visitor) noexcept : _visitor{visitor}
             {
-                PRODUCE_ERROR_TODO(
-                    "Could not deduce recursive visitation return type.");
+            }
+
+            template <typename... Ts>
+            constexpr Return operator()(Ts&&... xs)
+            {
+                return ::scelta::recursive::visit<Return>(_visitor, FWD(xs)...);
+            }
+        };
+
+        template <typename Return, typename F>
+        struct recursive_visitor : F
+        {
+            using this_type = recursive_visitor<Return, F>;
+            using recursor_type = recursor<Return, this_type>;
+
+            template <typename FFwd>
+            constexpr recursive_visitor(FFwd&& f) noexcept(noexcept(F{FWD(f)}))
+                : F{FWD(f)}
+            {
+            }
+
+            template <typename... Ts>
+            constexpr Return operator()(Ts&&... xs)
+            {
+                return static_cast<F&>(*this)(recursor_type{*this}, FWD(xs)...);
             }
         };
     }
 
-    // TODO: ?
-    // clang-format off
-    template <typename Visitor>
-    constexpr auto visit(Visitor&& visitor) 
-        SCELTA_RETURNS(FWD(visitor)())
-
-    template <typename Visitor, typename Variant, typename... Variants>
-    constexpr auto visit(
-        Visitor&& visitor, Variant&& variant, Variants&&... variants)
-        SCELTA_RETURNS(
-            scelta::impl::visit_homogenizer(
-                FWD(visitor), FWD(variant), FWD(variants)...)
-        )
 
     namespace impl
     {
-
-        
-        // clang-format off
-        template <typename... Fs>
+        template <typename Return, typename... Fs>
         constexpr auto make_recursive_visitor(Fs&&... fs)
-            SCELTA_RETURNS(
-                impl::recursive_visitor<decltype(overload(FWD(fs)...))>{overload(FWD(fs)...)}
-            )
+        {
+            return meta::y_combinator([o = overload(FWD(fs)...)](
+                auto self, auto&&... xs) mutable->Return {
+                return o(
+                    [&self](auto&&... vs) -> Return {
+                        return ::scelta::recursive::visit<Return>(
+                            self, FWD(vs)...);
+                    },
+                    FWD(xs)...);
+            });
+        }
     }
-    // clang-format on
-    /*
-        template <typename... Fs>
-        constexpr auto match(Fs&&... fs)
-            SCELTA_RETURNS(impl::recursive_visitor<decltype(overload(FWD(fs)...))>{
-                overload(FWD(fs)...)})
-    */
-    template <typename... Fs>
+
+    template <typename Return, typename... Fs>
     constexpr auto match(Fs&&... fs)
     {
-        // return meta::y_combinator(
-        // clang-format on
-
-        return [rv = impl::make_recursive_visitor(FWD(fs)...)](
-            auto&&... vs) mutable->decltype(auto)
+        return [rv = impl::make_recursive_visitor<Return>(FWD(fs)...)](
+            auto&&... vs) mutable->Return
         {
-            return ::scelta::visit(rv, FWD(vs)...);
+            return ::scelta::recursive::visit<Return>(rv, FWD(vs)...);
         };
     }
 }

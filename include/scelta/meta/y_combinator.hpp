@@ -21,7 +21,8 @@ namespace scelta::meta
 
             F _f;
 
-            constexpr fn_ref_wrapper(F f) noexcept : _f{f}
+            template <typename FFwd>
+            constexpr fn_ref_wrapper(FFwd&& f) noexcept : _f{FWD(f)}
             {
             }
 
@@ -52,7 +53,8 @@ namespace scelta::meta
         FWD(xs)...))                                                          \
     {                                                                         \
         return static_cast<F m_ref_qualifier>(*this)(                         \
-            fn_ref_wrapper<y_combinator_wrapper m_ref_qualifier>{*this},      \
+            fn_ref_wrapper<y_combinator_wrapper m_ref_qualifier>{             \
+                static_cast<y_combinator_wrapper m_ref_qualifier>(*this)},    \
             FWD(xs)...);                                                      \
     }
 

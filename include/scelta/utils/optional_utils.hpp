@@ -39,6 +39,7 @@ namespace scelta::impl
               : FWD(c)(FWD(f)(to_nullopt()))
         )
 
+// TODO: noexcept incorrect
     template <typename Visitor, typename Optional, typename... Optionals>
     constexpr auto visit_optional(
         Visitor&& visitor, Optional&& o, Optionals&&... os)

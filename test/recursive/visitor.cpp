@@ -17,7 +17,7 @@ TEST_MAIN()
                 auto o = scelta::overload([](auto, int)  { return 0; },
                                           [](auto, char) { return 1; });
 
-                auto v = scelta::recursive::impl::recursive_visitor<decltype(o)>(
+                auto v = scelta::recursive::impl::recursive_visitor<int, decltype(o)>(
                     std::move(o));
 
                 EXPECT_EQ(v(0), 0);
@@ -25,11 +25,10 @@ TEST_MAIN()
             }
 
             {
-                auto o = scelta::overload([](auto, int)           ->int { return 0; },
-                                          [&](auto recurse, char) ->int { auto v = make(0); return recurse(v); });
-                                          // TODO: boost fails without ->int
-                                          // TODO: boost defect?
-                auto v = scelta::recursive::impl::recursive_visitor<decltype(o)>(
+                auto o = scelta::overload([](auto, int)           -> int { return 0; },
+                                          [&](auto recurse, char) -> int { auto v = make(0); return recurse(v); });
+                                          
+                auto v = scelta::recursive::impl::recursive_visitor<int, decltype(o)>(
                     std::move(o));
 
                 EXPECT_EQ(v(0), 0);

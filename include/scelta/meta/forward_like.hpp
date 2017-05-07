@@ -6,19 +6,21 @@
 #pragma once
 
 #include "../utils/fwd.hpp"
+#include "../utils/returns.hpp"
 #include <type_traits>
 
 // Usage of C++17: nested `namespace`.
 namespace scelta::meta
 {
+    // Applies `T`'s value category on `Source`.
     template <typename Source, typename T>
-    decltype(auto) forward_like(T&& x) noexcept
-    {
-        using type = std::conditional_t<
-            std::is_lvalue_reference_v<Source>, //
-            std::remove_reference_t<T>&,        //
-            std::remove_reference_t<T>&&>;
+    using as_if_forwarded = std::conditional_t< //
+        std::is_lvalue_reference_v<Source>,     //
+        std::remove_reference_t<T>&,            //
+        std::remove_reference_t<T>&&>;
 
-        return static_cast<type>(x);
-    }
+    // Forwards `x` with the same value category as `Source`.
+    template <typename Source, typename T>
+    auto forward_like(T&& x)
+        SCELTA_RETURNS(static_cast<as_if_forwarded<Source, T&&>>(x))
 }

@@ -25,3 +25,9 @@
     {                                    \
         return __VA_ARGS__;              \
     }
+
+#define SCELTA_NOEXCEPT_AND_RETURN_BODY(...) \
+    noexcept(noexcept(__VA_ARGS__))          \
+    {                                        \
+        return __VA_ARGS__;                  \
+    }
