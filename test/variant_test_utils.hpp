@@ -63,6 +63,10 @@ namespace test
 #if defined(SCELTA_SUPPORT_VARIANT_EGGS)
         f(TestCase<eggs::variant>{});
 #endif
+
+#if defined(SCELTA_SUPPORT_VARIANT_MPARK)
+        f(TestCase<mpark::variant>{});
+#endif
     }
 
     template <template <template <typename...> class> class TestCase,

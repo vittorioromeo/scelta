@@ -8,3 +8,4 @@
 #include "./variant/std.hpp"
 #include "./variant/boost.hpp"
 #include "./variant/eggs.hpp"
+#include "./variant/mpark.hpp"
