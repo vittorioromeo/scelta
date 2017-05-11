@@ -42,8 +42,8 @@ namespace scelta::impl
     // TODO: noexcept incorrect
     template <typename Visitor, typename Optional, typename... Optionals>
     constexpr auto visit_optional(
-        Visitor&& visitor, Optional&& o, Optionals&&... os)
-        SCELTA_NOEXCEPT_AND_TRT(FWD(visitor)(to_nullopt(), to_nullopt(os)...))
+        Visitor&& visitor, Optional&& o, Optionals&&... os) ->decltype(auto)
+        // SCELTA_NOEXCEPT_AND_TRT(FWD(visitor)(to_nullopt(), to_nullopt(os)...))
     {
         return call_with_optional(
             [&](auto&& x) noexcept

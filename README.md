@@ -8,7 +8,7 @@ With the introduction of `std::variant` and `std::optional` to C++17's Standard 
 
 ### Implementation independent
 
-`scelta` detects and works out-of-the-box with `std::variant`, `std::optional`, `boost::variant`, `boost::optional`, and `eggs::variant`. 
+`scelta` detects and works out-of-the-box with `std::variant`, `std::optional`, `boost::variant`, `mpark::variant`, `boost::optional`, and `eggs::variant`. 
 
 Other implementation can be easily adapted by providing an *homogenizer* helper `struct`. PRs are welcome!
 
@@ -88,7 +88,40 @@ scelta::recursive::match<return_type>(
 
 ## Installation/usage
 
-TODO
+### Quick start
+
+`scelta` is an *header-only* library. It is sufficient to include it.
+
+```cpp
+// my_main.cpp
+#include <scelta.hpp>
+
+int main() { return 0; }
+```
+
+```bash
+g++ -std=c++1z my_main.cpp -Isome_path/scelta/include
+```
+
+### Integration with existing project
+
+1. Add this repository and [SuperV1234/vrm_cmake](https://github.com/SuperV1234/vrm_cmake) as submodules of your project, in subfolders inside `your_project/extlibs/`:
+
+    ```bash
+    git submodule add   https://github.com/SuperV1234/vrm_cmake.git   your_project/extlibs/vrm_cmake
+    git submodule add   https://github.com/SuperV1234/scelta.git      your_project/extlibs/scelta
+    ```
+
+2. Include `vrm_cmake` in your project's `CMakeLists.txt` and look for the `scelta` extlib:
+
+    ```cmake
+    # Include `vrm_cmake`:
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/extlibs/vrm_cmake/cmake/")
+    include(vrm_cmake)
+
+    # Find `scelta`:
+    vrm_cmake_find_extlib(scelta)
+    ```
 
 ## Documentation
 
