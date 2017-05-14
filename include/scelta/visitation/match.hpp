@@ -51,6 +51,8 @@ namespace scelta
     // clang-format off
     template <typename... Fs>
     constexpr auto match(Fs&&... fs) 
-        SCELTA_RETURNS(impl::make_bound_visitor(overload(FWD(fs)...)))
+        SCELTA_RETURNS(
+            impl::make_bound_visitor(overload(FWD(fs)...))
+        )
     // clang-format on
 }

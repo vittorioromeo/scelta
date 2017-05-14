@@ -20,16 +20,29 @@ namespace scelta::recursive
     {
         template <typename Return, typename... Fs>
         constexpr auto make_recursive_visitor(Fs&&... fs)
-        {
-            return meta::y_combinator([o = overload(FWD(fs)...)](
-                auto self, auto&&... xs) mutable->Return {
-                return o(
-                    [&self](auto&&... vs) -> Return {
-                        return ::scelta::recursive::visit<Return>(
-                            self, FWD(vs)...);
-                    },
-                    FWD(xs)...);
-            });
+        {   
+            // clang-format off
+            return meta::y_combinator(
+                // Recurse on this lambda via Y combinator to pass it back
+                // as part of the bound `recurse` argument.
+                [o = overload(FWD(fs)...)](auto self, auto&&... xs) mutable
+                    -> Return 
+                {
+                    // Invoke the overload...
+                    return o(
+                        
+                        // Passing a visitor that invokes `self` to the
+                        // `recurse` argument.
+                        [&self](auto&&... vs) -> Return {
+                            return ::scelta::recursive::visit<Return>(
+                                self, FWD(vs)...);
+                        },
+
+                        // Forwarding the rest of the arguments.
+                        FWD(xs)...);
+                }
+            );
+            // clang-format on
         }
     }
 

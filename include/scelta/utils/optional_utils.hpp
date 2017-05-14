@@ -32,6 +32,7 @@ namespace scelta::impl
             FWD(visitor)()
         )
 
+    // Invokes the continuation `c` with the result of `f(<"unpacked" o>)`.
     template <typename F, typename Continuation, typename Optional>
     constexpr auto call_with_optional(F&& f, Continuation&& c, Optional&& o)
         SCELTA_RETURNS(
@@ -46,12 +47,17 @@ namespace scelta::impl
         // SCELTA_NOEXCEPT_AND_TRT(FWD(visitor)(to_nullopt(), to_nullopt(os)...))
     {
         return call_with_optional(
+            // Binds the first "unpacked" optional to the visitor.
+            // Returns a the next visitor with the bound value, which will
+            // be passed to the continuation function.
             [&](auto&& x) noexcept
             {
                 return [&](auto&&... xs) SCELTA_RETURNS(
                     FWD(visitor)(FWD(x), FWD(xs)...)
                 );
             }, 
+            
+            // Continuation: recurse upon the newly bound visitor.
             [&](auto&& bound_visitor) SCELTA_RETURNS(
                 visit_optional(FWD(bound_visitor), FWD(os)...)
             ), 
