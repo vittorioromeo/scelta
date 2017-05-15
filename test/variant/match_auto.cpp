@@ -73,10 +73,14 @@ TEST_MAIN()
                 scelta::visit(t2, v);
 
                 /* TODO: ??? see temp/struct_vs_variant.cpp, report bug?
-                auto t3_a = [](a x)    {                return x.foo(); };
-                auto t3_b = [](auto x) { EXPECT(false); return x.bar(); };
-                auto t3 = scelta::overload(t3_a, t3_b);
-                scelta::visit(t3, v);
+                // auto t3_a = [](a x)    {                return x.foo(); };
+                // auto t3_b = [](auto x) { EXPECT(false); return x.bar(); };
+                // auto t3 = scelta::overload(t3_a, t3_b);
+                // scelta::visit(t3, v);
+                
+                This is gcc bug 80767, see:
+                * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80767
+                * http://stackoverflow.com/questions/43982799
                 */
 
                 scelta::match(
