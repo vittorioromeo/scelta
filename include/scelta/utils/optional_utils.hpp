@@ -6,6 +6,7 @@
 #pragma once
 
 #include "../meta/forward_like.hpp"
+#include "./access_optional.hpp"
 #include "./returns.hpp"
 
 namespace scelta
@@ -21,7 +22,7 @@ namespace scelta::impl
 {
     // clang-format off
     template <typename... Ts>
-    constexpr auto to_nullopt(Ts&&...) 
+    constexpr auto to_nullopt(Ts&&...)
         SCELTA_RETURNS(
             ::scelta::nullopt
         )
@@ -36,7 +37,7 @@ namespace scelta::impl
     template <typename F, typename Continuation, typename Optional>
     constexpr auto call_with_optional(F&& f, Continuation&& c, Optional&& o)
         SCELTA_RETURNS(
-            o ? FWD(c)(FWD(f)(meta::forward_like<Optional>(*o)))
+            o ? FWD(c)(FWD(f)(meta::forward_like<Optional>(::scelta::impl::access_optional(o))))
               : FWD(c)(FWD(f)(to_nullopt()))
         )
 
@@ -55,12 +56,12 @@ namespace scelta::impl
                 return [&](auto&&... xs) SCELTA_RETURNS(
                     FWD(visitor)(FWD(x), FWD(xs)...)
                 );
-            }, 
-            
+            },
+
             // Continuation: recurse upon the newly bound visitor.
             [&](auto&& bound_visitor) SCELTA_RETURNS(
                 visit_optional(FWD(bound_visitor), FWD(os)...)
-            ), 
+            ),
             FWD(o)
         );
     }

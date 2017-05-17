@@ -60,12 +60,14 @@ namespace scelta::meta
             DEFINE_CALL_OPERATOR(&)
             DEFINE_CALL_OPERATOR(const&)
             DEFINE_CALL_OPERATOR(&&)
+
+#undef DEFINE_CALL_OPERATOR
         };
     }
 
     // clang-format off
     template <typename F>
-    auto y_combinator(F&& f) 
+    auto y_combinator(F&& f)
         SCELTA_RETURNS(
             impl::y_combinator_wrapper<std::decay_t<F>>(FWD(f))
         )

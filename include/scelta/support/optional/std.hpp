@@ -10,6 +10,7 @@
 
 // Usage of C++17: `<optional>`.
 #include "../../utils/optional_utils.hpp"
+#include "../../utils/homogenizer.hpp"
 #include <optional>
 
 #define SCELTA_SUPPORT_OPTIONAL_STD 1

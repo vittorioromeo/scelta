@@ -9,10 +9,29 @@
 #if __has_include(<boost/optional.hpp>) && __has_include(<boost/none.hpp>)
 
 #include "../../utils/optional_utils.hpp"
+#include "../../utils/homogenizer.hpp"
 #include <boost/optional.hpp>
 #include <boost/none.hpp>
 
 #define SCELTA_SUPPORT_OPTIONAL_BOOST 1
 SCELTA_DEFINE_HOMOGENIZER_OPTIONAL(::boost::optional)
+
+/* TODO: consider
+namespace scelta::support::optional::boost
+{
+    template <typename F>
+    constexpr auto if_supported(F&& f) SCELTA_RETURNS(f())
+}
+*/
+
+#else
+
+/* TODO: consider
+namespace scelta::support::optional::boost
+{
+    template <typename F>
+    constexpr void if_supported(F&&) {}
+}
+*/
 
 #endif

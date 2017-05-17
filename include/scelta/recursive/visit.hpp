@@ -43,7 +43,8 @@ namespace scelta::recursive
     template <typename Return, typename Visitor, typename... Variants>
     constexpr Return visit(Visitor&& visitor, Variants&&... variants)
     {
-        return ::scelta::visit(FWD(visitor),
+        return ::scelta::impl::visit_impl(::scelta::impl::recursive_tag<Return>{},
+            FWD(visitor),
             static_cast<meta::copy_cv_ptr_ref_t<Variants&&,
                 impl::original_type_t<std::decay_t<Variants>>>>(variants)...);
     }

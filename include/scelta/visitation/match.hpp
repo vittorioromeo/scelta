@@ -27,10 +27,10 @@ namespace scelta
     template <typename... Variants>                                         \
     constexpr auto operator()(Variants&&... variants) m_ref_qualifier       \
         SCELTA_NOEXCEPT_AND_TRT(                                            \
-            visit(std::declval<m_visitor_type>(), FWD(variants)...)         \
+            ::scelta::visit(std::declval<m_visitor_type>(), FWD(variants)...)         \
         )                                                                   \
     {                                                                       \
-        return visit(static_cast<m_visitor_type>(*this), FWD(variants)...); \
+        return ::scelta::visit(static_cast<m_visitor_type>(*this), FWD(variants)...); \
     }
 
             DEFINE_BOUND_VISITOR_CALL(Visitor&,       &)
@@ -41,7 +41,7 @@ namespace scelta
         };
 
         template <typename Visitor>
-        constexpr auto make_bound_visitor(Visitor&& visitor) 
+        constexpr auto make_bound_visitor(Visitor&& visitor)
             SCELTA_RETURNS(
                 bound_visitor<std::decay_t<Visitor>>{FWD(visitor)}
             )
@@ -50,7 +50,7 @@ namespace scelta
 
     // clang-format off
     template <typename... Fs>
-    constexpr auto match(Fs&&... fs) 
+    constexpr auto match(Fs&&... fs)
         SCELTA_RETURNS(
             impl::make_bound_visitor(overload(FWD(fs)...))
         )

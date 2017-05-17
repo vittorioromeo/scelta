@@ -29,12 +29,28 @@ namespace scelta::impl
     using homogenizer_helper_t = typename homogenizer_helper<T>::type;
 
     // clang-format off
-    template <typename Visitor, typename Variant, typename... Variants>
-    constexpr auto visit_homogenizer(
+    template <typename T>
+    struct visitor_adapter
+    {
+        template <typename Tag, typename U>
+        constexpr auto operator()(Tag, U&& x) const
+            SCELTA_RETURNS(
+                FWD(x)
+            )
+    };
+
+    struct non_recursive_tag {};
+
+    template <typename Return>
+    struct recursive_tag { using return_type = Return; };
+
+    template <typename Tag, typename Visitor, typename Variant, typename... Variants>
+    constexpr auto visit_homogenizer(Tag tag,
         Visitor&& visitor, Variant&& variant, Variants&&... variants)
         SCELTA_RETURNS(
             homogenizer_helper_t<std::decay_t<Variant>>{}(
-                FWD(visitor), FWD(variant), FWD(variants)...)
+                visitor_adapter<std::decay_t<Variant>>{}(tag, FWD(visitor)),
+                FWD(variant), FWD(variants)...)
         )
     // clang-format on
 }
@@ -52,4 +68,4 @@ namespace scelta::impl
     }
 
 #define SCELTA_DEFINE_HOMOGENIZER_OPTIONAL(m_type) \
-    SCELTA_DEFINE_HOMOGENIZER_VARIANT(m_type, visit_optional)
+    SCELTA_DEFINE_HOMOGENIZER_VARIANT(m_type, ::scelta::impl::visit_optional)
