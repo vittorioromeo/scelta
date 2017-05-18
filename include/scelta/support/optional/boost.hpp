@@ -36,4 +36,6 @@ namespace scelta::support::optional::boost
 }
 */
 
+// TODO: provide something like "SCELTA_DISABLE_SUPPORT_OPTIONAL_BOOST"
+
 #endif
