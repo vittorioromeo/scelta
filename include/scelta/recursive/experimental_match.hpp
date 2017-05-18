@@ -12,6 +12,7 @@
 #include "../utils/returns.hpp"
 #include "../visitation/visit.hpp"
 #include "./visit.hpp"
+#include <boost/callable_traits.hpp>
 #include <experimental/type_traits>
 #include <type_traits>
 
@@ -19,23 +20,9 @@ namespace scelta::experimental::recursive
 {
     namespace impl
     {
-
-        template <typename T>
-        struct function_traits
-            : public function_traits<decltype(&T::operator())>
-        {
-        };
-
-        template <typename T, typename TReturn, typename... TArgs>
-        struct function_traits<TReturn (T::*)(TArgs...) const>
-        {
-            static constexpr std::size_t arity = sizeof...(TArgs);
-
-            using result_type = TReturn;
-
-            template <std::size_t TI>
-            using arg = std::tuple_element_t<TI, std::tuple<TArgs...>>;
-        };
+        template <typename F>
+        inline constexpr auto arity =
+            std::tuple_size_v<boost::callable_traits::args_t<F>>;
 
         template <typename T>
         using is_not_overloaded_impl = decltype(&std::decay_t<T>::operator());
@@ -44,36 +31,41 @@ namespace scelta::experimental::recursive
         using is_not_overloaded =
             std::experimental::is_detected<is_not_overloaded_impl, T>;
 
-
-        template <bool TOverloaded>
-        struct adapt_helper;
-
-        template <>
-        struct adapt_helper<true>
+        template <bool Overloaded>
+        struct adapt_helper
         {
-            template <typename TF>
-            auto operator()(TF&& f)
+            template <typename F>
+            constexpr auto operator()(F&& f) noexcept
             {
-                return [f = FWD(f)](auto, auto&& x)->decltype(f(FWD(x)))
-                {
-                    return f(FWD(x));
-                };
+                return [f = FWD(f)](auto, auto&& x)
+                    SCELTA_RETURNS(std::forward<F>(f)(FWD(x)));
+            }
+        };
+
+        template <typename>
+        struct adapt_helper2;
+
+        template <template <typename...> class T, typename... Ts>
+        struct adapt_helper2<T<Ts...>>
+        {
+            template <typename F>
+            constexpr auto do_it(F&& f)
+            {
+                return [f = FWD(f)](auto, Ts... xs)
+                    SCELTA_RETURNS(std::forward<F>(f)(FWD(xs)...));
             }
         };
 
         template <>
         struct adapt_helper<false>
         {
-            template <typename TF>
-            auto operator()(TF&& f)
+            template <typename F>
+            constexpr auto operator()(F&& f)
             {
-                using argt = typename function_traits<
-                    std::decay_t<decltype(f)>>::template arg<0>;
+                using arg_tuple =
+                    boost::callable_traits::args_t<std::decay_t<F>>;
 
-                return [f = FWD(f)](auto, argt x)->decltype(f(x))
-                {
-                    return f(x);
-                };
+                return adapt_helper2<arg_tuple>{}.do_it(FWD(f));
             }
         };
 

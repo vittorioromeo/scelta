@@ -45,16 +45,17 @@ namespace scelta::impl
     template <typename T>
     struct nullvar_ignorer
     {
-        T&& _visitor;
+        T _visitor;
+        static_assert(std::is_reference_v<T>);
 
         template <typename TFwd>
-        nullvar_ignorer(TFwd&& visitor) : _visitor{FWD(visitor)}
+        constexpr nullvar_ignorer(TFwd&& visitor) : _visitor{FWD(visitor)}
         {
         }
 
         template <typename... Ts,
             std::enable_if_t<any_is_nullvar_v<Ts...>>* = nullptr>
-        constexpr auto operator()(Ts&&...)
+        constexpr void operator()(Ts&&...) const noexcept
         {
             assert(false);
             __builtin_unreachable();
