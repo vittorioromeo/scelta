@@ -12,32 +12,37 @@
 
 #include "../../utils/optional_utils.hpp"
 #include "../../utils/homogenizer.hpp"
+#include "../../traits/optional.hpp"
 #include <type_safe/optional.hpp>
 
 #define SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE 1
 
 namespace scelta::impl
 {
-    template <typename StoragePolicy>
-    struct ts_optional_homogenizer
+    template <typename T>
+    struct traits<::type_safe::optional<T>>
     {
-        template <typename... Ts>
-        constexpr auto operator()(Ts&&... xs) const
-            SCELTA_RETURNS(::scelta::impl::visit_optional(FWD(xs)...))
+        template <typename Tag, typename... Ts>
+        static constexpr auto visit(Tag, Ts&&... xs)
+            SCELTA_RETURNS(
+                ::scelta::impl::visit_optional(FWD(xs)...)
+            )
+
+        template <typename... Variants>
+        static constexpr auto valid_state(Variants&&...)
+            SCELTA_RETURNS(
+                true
+            )
     };
 
-    template <typename StoragePolicy>
-    struct homogenizer_helper<::type_safe::basic_optional<StoragePolicy>>
+    template <typename T>
+    struct optional_traits<::type_safe::optional<T>>
     {
-        using type = ts_optional_homogenizer<StoragePolicy>;
-    };
-
-    template <typename StoragePolicy>
-    struct optional_access_homogenizer<
-        ::type_safe::basic_optional<StoragePolicy>>
-    {
-        template <typename U>
-        constexpr auto operator()(U&& x) SCELTA_RETURNS(FWD(x).value())
+        template <typename Optional>
+        static constexpr auto access(Optional&& o)
+            SCELTA_RETURNS(
+                FWD(o).value()
+            )
     };
 }
 

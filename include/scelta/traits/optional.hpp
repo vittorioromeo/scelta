@@ -5,10 +5,11 @@
 
 #pragma once
 
-#include "./returns.hpp"
-#include <type_traits>
+#include "../utils.hpp"
 
 // Usage of C++17: nested `namespace`.
-namespace scelta::impl
+namespace scelta::traits
 {
+    template <typename>
+    struct optional;
 }

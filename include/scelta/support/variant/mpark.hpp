@@ -11,9 +11,28 @@
 // clang-format on
 
 #include "../../utils/homogenizer.hpp"
+#include "../../traits/variant.hpp"
 #include <mpark/variant.hpp>
 
 #define SCELTA_SUPPORT_VARIANT_MPARK 1
-SCELTA_DEFINE_HOMOGENIZER_VARIANT(::mpark::variant, ::mpark::visit)
+
+namespace scelta::impl
+{
+    template <typename... Alternatives>
+    struct traits<::mpark::variant<Alternatives...>>
+    {
+        template <typename Tag, typename... Ts>
+        static constexpr auto visit(Tag, Ts&&... xs)
+            SCELTA_RETURNS(
+                ::mpark::visit(FWD(xs)...)
+            )
+
+        template <typename... Variants>
+        static constexpr auto valid_state(Variants&&... vs)
+            SCELTA_RETURNS(
+                !(vs.valueless_by_exception() || ...)
+            )
+    };
+}
 
 #endif

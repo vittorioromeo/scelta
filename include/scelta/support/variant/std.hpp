@@ -12,9 +12,28 @@
 
 // Usage of C++17: `<variant>`.
 #include "../../utils/homogenizer.hpp"
+#include "../../traits/variant.hpp"
 #include <variant>
 
 #define SCELTA_SUPPORT_VARIANT_STD 1
-SCELTA_DEFINE_HOMOGENIZER_VARIANT(::std::variant, ::std::visit)
+
+namespace scelta::impl
+{
+    template <typename... Alternatives>
+    struct traits<::std::variant<Alternatives...>>
+    {
+        template <typename Tag, typename... Ts>
+        static constexpr auto visit(Tag, Ts&&... xs)
+            SCELTA_RETURNS(
+                ::std::visit(FWD(xs)...)
+            )
+
+        template <typename... Variants>
+        static constexpr auto valid_state(Variants&&... vs)
+            SCELTA_RETURNS(
+                !(vs.valueless_by_exception() || ...)
+            )
+    };
+}
 
 #endif

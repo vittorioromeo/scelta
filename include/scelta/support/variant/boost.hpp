@@ -11,9 +11,28 @@
 // clang-format on
 
 #include "../../utils/homogenizer.hpp"
+#include "../../traits/variant.hpp"
 #include <boost/variant.hpp>
 
 #define SCELTA_SUPPORT_VARIANT_BOOST 1
-SCELTA_DEFINE_HOMOGENIZER_VARIANT(::boost::variant, ::boost::apply_visitor)
+
+namespace scelta::impl
+{
+    template <typename... Alternatives>
+    struct traits<::boost::variant<Alternatives...>>
+    {
+        template <typename Tag, typename... Ts>
+        static constexpr auto visit(Tag, Ts&&... xs)
+            SCELTA_RETURNS(
+                ::boost::apply_visitor(FWD(xs)...)
+            )
+
+        template <typename... Variants>
+        static constexpr auto valid_state(Variants&&...)
+            SCELTA_RETURNS(
+                true
+            )
+    };
+}
 
 #endif

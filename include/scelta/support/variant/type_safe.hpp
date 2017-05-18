@@ -12,6 +12,7 @@
 // clang-format on
 
 #include "../../utils/homogenizer.hpp"
+#include "../../traits/variant.hpp"
 #include "../../utils/linear_overload.hpp"
 #include "../../utils/overload.hpp"
 #include <cassert>
@@ -22,19 +23,6 @@
 
 namespace scelta::impl
 {
-    struct ts_variant_homogenizer
-    {
-        template <typename... Ts>
-        constexpr auto operator()(Ts&&... xs) const
-            SCELTA_RETURNS(::type_safe::visit(FWD(xs)...))
-    };
-
-    template <typename VariantPolicy, typename... Ts>
-    struct homogenizer_helper<::type_safe::basic_variant<VariantPolicy, Ts...>>
-    {
-        using type = ts_variant_homogenizer;
-    };
-
     template <typename... Ts>
     using any_is_nullvar = std::disjunction<
         std::is_same<std::decay_t<Ts>, type_safe::nullvar_t>...>;
@@ -67,16 +55,33 @@ namespace scelta::impl
             SCELTA_RETURNS(FWD(_visitor)(FWD(xs)...))
     };
 
-    template <typename VariantPolicy, typename T, typename... Ts>
-    struct visitor_adapter<::type_safe::basic_variant<VariantPolicy, T, Ts...>>
+    template <typename T>
+    constexpr auto make_nullvar_ignorer(T&& x)
+        SCELTA_RETURNS(
+            nullvar_ignorer<T&&>{FWD(x)}
+        )
+}
+
+namespace scelta::impl
+{
+    template <typename VariantPolicy, typename... Alternatives>
+    struct traits<::type_safe::basic_variant<VariantPolicy, Alternatives...>>
     {
-        // clang-format off
-        template <typename Tag, typename U>
-        constexpr auto operator()(Tag, U&& x) const
+        template <typename Tag, typename Visitor, typename... Ts>
+        static constexpr auto visit(Tag, Visitor&& v, Ts&&... xs)
             SCELTA_RETURNS(
-                nullvar_ignorer<U&&>{FWD(x)}
+                ::type_safe::visit(
+                    ::scelta::impl::make_nullvar_ignorer(FWD(v)),
+                    FWD(xs)...
+                )
             )
-        // clang-format on
+
+        template <typename... Variants>
+        static constexpr auto valid_state(Variants&&...)
+            SCELTA_RETURNS(
+                // TODO: depends on the policy
+                true
+            )
     };
 }
 

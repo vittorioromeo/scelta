@@ -12,11 +12,31 @@
 
 #include "../../utils/optional_utils.hpp"
 #include "../../utils/homogenizer.hpp"
+#include "../../traits/optional.hpp"
 #include <boost/optional.hpp>
 #include <boost/none.hpp>
 
 #define SCELTA_SUPPORT_OPTIONAL_BOOST 1
-SCELTA_DEFINE_HOMOGENIZER_OPTIONAL(::boost::optional)
+
+namespace scelta::impl
+{
+    template <typename T>
+    struct traits<::boost::optional<T>>
+    {
+        template <typename Tag, typename... Ts>
+        static constexpr auto visit(Tag, Ts&&... xs)
+            SCELTA_RETURNS(
+                ::scelta::impl::visit_optional(FWD(xs)...)
+            )
+
+        template <typename... Variants>
+        static constexpr auto valid_state(Variants&&...)
+            SCELTA_RETURNS(
+                true
+            )
+    };
+}
+
 
 /* TODO: consider
 namespace scelta::support::optional::boost

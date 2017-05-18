@@ -11,9 +11,28 @@
 // clang-format on
 
 #include "../../utils/homogenizer.hpp"
+#include "../../traits/variant.hpp"
 #include <eggs/variant.hpp>
 
 #define SCELTA_SUPPORT_VARIANT_EGGS 1
-SCELTA_DEFINE_HOMOGENIZER_VARIANT(::eggs::variant, ::eggs::variants::apply)
+
+namespace scelta::impl
+{
+    template <typename... Alternatives>
+    struct traits<::eggs::variant<Alternatives...>>
+    {
+        template <typename Tag, typename... Ts>
+        static constexpr auto visit(Tag, Ts&&... xs)
+            SCELTA_RETURNS(
+                ::eggs::variants::apply(FWD(xs)...)
+            )
+
+        template <typename... Variants>
+        static constexpr auto valid_state(Variants&&...)
+            SCELTA_RETURNS(
+                true
+            )
+    };
+}
 
 #endif

@@ -3,6 +3,17 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
+#if 1
+
+#include "../test_utils.hpp"
+
+TEST_MAIN()
+{
+    // TODO:
+}
+
+#else
+
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
 #include <memory>
@@ -74,3 +85,5 @@ TEST_MAIN()
     test::instantiate_with_all_variant_implementations<test_case>(
         [](auto x) { x.run(); });
 }
+
+#endif
