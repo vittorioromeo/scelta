@@ -4,13 +4,32 @@ C++17 zero-overhead syntactic sugar for `variant` and `optional`.
 
 ## Overview
 
-With the introduction of `std::variant` and `std::optional` to C++17's Standard Library, hopefully *sum types* will become commonly used *vocabulary types* that improve type safety and efficiency of many applications. Unfortunately their syntax is not as nice as it could be - `scelta` aims to fix that by providing zero-overhead implementation-independent syntactic sugar.
+`std::variant` and `std::optional` were introduced to C++17's Standard Library. They are **sum types** that can greatly improve *type safety* and *performance*.
+
+However, there are some problems with them:
+
+* The syntax of some common operations such as **visitation** is not as nice as it could be, and requires a significant amount of boilerplate.
+
+* Defining and using recursive `variant` or `optional` types is not trivial and requires a lot of boilerplate.
+
+* `std::optional` doesn't support visitation.
+
+* The interface of `std::variant` and `std::optional` is different from some other commonly used ADT implementations - interoperability requires significant boilerplate.
+
+**`scelta`** aims to fix all the aformenetioned problems by providing zero-overhead syntactic sugar that:
+
+* Automatically detects and homogenizes all available `variant` and `optional` implementations, providing a single **implementation-independent** interface.
+
+* Provides **"pattern matching"**-like syntax for visitation and recursive visitation which works both for `variant` and `optional`.
+
+* Provides an intuitive **placeholder-based** recursive `variant` and `optional` type definition.
+
 
 ### Implementation independent
 
-`scelta` detects and works out-of-the-box with `std::variant`, `std::optional`, `boost::variant`, `mpark::variant`, `boost::optional`, and `eggs::variant`. 
+`scelta` detects and works out-of-the-box with `std::variant`, `std::optional`, `boost::variant`, `mpark::variant`, `boost::optional`, and `eggs::variant`.
 
-Other implementation can be easily adapted by providing an *homogenizer* helper `struct`. PRs are welcome!
+Other implementation can be easily adapted by providing specializations of the helper `traits` and `optional_traits` structs. PRs are welcome!
 
 ### Curried visitation syntax
 
@@ -29,13 +48,15 @@ scelta::match([](circle, circle){ /* ... */ },
               [](box,    box)   { /* ... */ })(s0, s1);
 ```
 
+The `match` function is intentionally *curried* in order to allow reuse of a particular visitor in a scope, even on different implementations of `variant`/`optional`.
+
 ```cpp
 using boost_optstr = boost::optional<std::string>;
 using std_optstr = std::optional<std::string>;
 
 // Curried `match` usage.
 auto print = scelta::match([](std::string s)    { cout << s;       },
-                           [](scelta::nullopt_t){ cout << "empty"; });  
+                           [](scelta::nullopt_t){ cout << "empty"; });
 
 boost_optstr s0{/*...*/};
 std_optstr s1{/*...*/};
@@ -44,6 +65,7 @@ std_optstr s1{/*...*/};
 print(s0);
 print(s1);
 ```
+
 
 ### Recursive ADTs creation and visitation
 
@@ -54,7 +76,7 @@ namespace impl
 {
     namespace sr = scelta::recursive;
 
-    // `placeholder` and `builder` can be used to define recursive 
+    // `placeholder` and `builder` can be used to define recursive
     // sum types.
     using _ = sr::placeholder;
     using builder = sr::builder<std::variant<int, std::vector<_>>>;
@@ -63,8 +85,8 @@ namespace impl
     using type = sr::type<builder>;
 
     // `resolve` completely evaluates one of the alternatives.
-    // (In this case, even the `Allocator` template parameter is 
-    // resolved.)
+    // (In this case, even the `Allocator` template parameter is
+    // resolved!)
     using vector_type = sr::resolve<builder, std::vector<_>>;
 }
 
@@ -90,17 +112,17 @@ scelta::recursive::match<return_type>(
 
 ### Quick start
 
-`scelta` is an *header-only* library. It is sufficient to include it.
+**`scelta`** is an *header-only* library. It is sufficient to include it.
 
 ```cpp
-// my_main.cpp
+// main.cpp
 #include <scelta.hpp>
 
 int main() { return 0; }
 ```
 
 ```bash
-g++ -std=c++1z my_main.cpp -Isome_path/scelta/include
+g++ -std=c++1z main.cpp -Isome_path/scelta/include
 ```
 
 ### Integration with existing project
