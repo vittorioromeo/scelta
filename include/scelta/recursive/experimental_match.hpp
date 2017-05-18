@@ -109,7 +109,7 @@ namespace scelta::experimental::recursive
         constexpr auto make_recursive_visitor(BaseCases&&... baseCases)
         {
             return [&baseCases...](auto&&... recursiveCases) {
-                return make_recursive_visitor_2(
+                return make_recursive_visitor_2<Return>(
                     adapt(std::forward<BaseCases>(baseCases))...,
                     FWD(recursiveCases)...);
             };
@@ -119,6 +119,7 @@ namespace scelta::experimental::recursive
     template <typename Return, typename... Fs>
     constexpr auto match(Fs&&... fs)
     {
+        // TODO: broken
         return [rv = ::scelta::experimental::recursive::impl::
                     make_recursive_visitor<Return>(FWD(fs)...)](
             auto&&... vs) mutable->Return
