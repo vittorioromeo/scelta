@@ -5,15 +5,18 @@
 
 #pragma once
 
+// clang-format off
 // Usage of C++17: `__has_include`.
-#if __has_include(<type_safe/variant.hpp>) && __has_include(<type_safe/visitor.hpp>)
+#if __has_include(<type_safe/variant.hpp>) && \
+    __has_include(<type_safe/visitor.hpp>)
+// clang-format on
 
 #include "../../utils/homogenizer.hpp"
-#include "../../utils/overload.hpp"
 #include "../../utils/linear_overload.hpp"
+#include "../../utils/overload.hpp"
+#include <cassert>
 #include <type_safe/variant.hpp>
 #include <type_safe/visitor.hpp>
-#include <cassert>
 
 #define SCELTA_SUPPORT_VARIANT_TYPE_SAFE 1
 
@@ -22,8 +25,8 @@ namespace scelta::impl
     struct ts_variant_homogenizer
     {
         template <typename... Ts>
-        constexpr decltype(auto) operator()(Ts&&... xs) const
-            {return ::type_safe::visit(FWD(xs)...);}
+        constexpr auto operator()(Ts&&... xs) const
+            SCELTA_RETURNS(::type_safe::visit(FWD(xs)...))
     };
 
     template <typename VariantPolicy, typename... Ts>
@@ -32,68 +35,47 @@ namespace scelta::impl
         using type = ts_variant_homogenizer;
     };
 
+    template <typename... Ts>
+    using any_is_nullvar = std::disjunction<
+        std::is_same<std::decay_t<Ts>, type_safe::nullvar_t>...>;
+
+    template <typename... Ts>
+    inline constexpr auto any_is_nullvar_v = any_is_nullvar<Ts...>::value;
+
     template <typename T>
-    struct non_recursive_adapter
+    struct nullvar_ignorer
     {
         T&& _visitor;
 
         template <typename TFwd>
-        non_recursive_adapter(TFwd&& visitor) : _visitor{FWD(visitor)}{}
+        nullvar_ignorer(TFwd&& visitor) : _visitor{FWD(visitor)}
+        {
+        }
 
-        template <typename... Ts, typename = std::enable_if_t<
-            (std::is_same_v<std::decay_t<Ts>, type_safe::nullvar_t> || ...)>
-        >
-        constexpr auto operator()(Ts&&...){ assert(false); }
+        template <typename... Ts,
+            std::enable_if_t<any_is_nullvar_v<Ts...>>* = nullptr>
+        constexpr auto operator()(Ts&&...)
+        {
+            assert(false);
+            __builtin_unreachable();
+        }
 
-        template <typename... Ts, typename = std::enable_if_t<
-            !(std::is_same_v<std::decay_t<Ts>, type_safe::nullvar_t> || ...)>,
-            typename Dummy = int
-        >
+        template <typename... Ts,
+            std::enable_if_t<!any_is_nullvar_v<Ts...>>* = nullptr>
         constexpr auto operator()(Ts&&... xs)
-            SCELTA_RETURNS(
-                _visitor(FWD(xs)...)
-            )
+            SCELTA_RETURNS(FWD(_visitor)(FWD(xs)...))
     };
-
-
-    template <typename R, typename T>
-    struct recursive_adapter
-    {
-        T&& _visitor;
-
-        template <typename TFwd>
-        recursive_adapter(TFwd&& visitor) : _visitor{FWD(visitor)}{}
-
-        template <typename... Ts, typename = std::enable_if_t<
-            (std::is_same_v<std::decay_t<Ts>, type_safe::nullvar_t> || ...)>
-        >
-        constexpr auto operator()(Ts&&...){ assert(false); }
-
-        template <typename... Ts, typename = std::enable_if_t<
-            !(std::is_same_v<std::decay_t<Ts>, type_safe::nullvar_t> || ...)>,
-            typename Dummy = int
-        >
-        constexpr auto operator()(Ts&&... xs)
-            SCELTA_RETURNS(
-                _visitor(FWD(xs)...)
-            )
-    };
-
 
     template <typename VariantPolicy, typename T, typename... Ts>
     struct visitor_adapter<::type_safe::basic_variant<VariantPolicy, T, Ts...>>
     {
-        template <typename U>
-        constexpr auto operator()   (::scelta::impl::non_recursive_tag, U&& x) const
-        {
-            return non_recursive_adapter<U&&>{FWD(x)};
-        }
-
-        template <typename R, typename U>
-        constexpr auto operator()(::scelta::impl::recursive_tag<R>, U&& x) const
-        {
-            return recursive_adapter<R, U&&>{FWD(x)};
-        }
+        // clang-format off
+        template <typename Tag, typename U>
+        constexpr auto operator()(Tag, U&& x) const
+            SCELTA_RETURNS(
+                nullvar_ignorer<U&&>{FWD(x)}
+            )
+        // clang-format on
     };
 }
 

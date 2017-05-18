@@ -26,7 +26,7 @@ namespace scelta
             using U = linear_overloader<Ts...>;
             U _u;
 
-#define SCELTA_DEFINE_SELECT(m_refq)                                     \
+#define DEFINE_SELECT(m_refq)                                            \
 private:                                                                 \
     template <typename... Args,                                          \
         typename =                                                       \
@@ -49,11 +49,11 @@ public:                                                                  \
         return select<Args...>(0)(FWD(xs)...);                           \
     }
 
-            SCELTA_DEFINE_SELECT(&)
-            SCELTA_DEFINE_SELECT(const&)
-            SCELTA_DEFINE_SELECT(&&)
+            DEFINE_SELECT(&)
+            DEFINE_SELECT(const&)
+            DEFINE_SELECT(&&)
 
-#undef SCELTA_DEFINE_SELECT
+#undef DEFINE_SELECT
 
         public:
             template <typename TFwd, typename... TFwds>

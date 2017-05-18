@@ -5,8 +5,10 @@
 
 #pragma once
 
+// clang-format off
 // Usage of C++17: `__has_include`.
 #if __has_include(<boost/variant.hpp>)
+// clang-format on
 
 #include "../../utils/homogenizer.hpp"
 #include <boost/variant.hpp>
