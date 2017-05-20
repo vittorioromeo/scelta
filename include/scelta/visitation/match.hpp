@@ -12,10 +12,10 @@ namespace scelta
 {
     namespace impl
     {
-        // clang-format off
         template <typename Visitor>
         struct bound_visitor : Visitor
         {
+            // clang-format off
             template <typename FwdVisitor>
             constexpr bound_visitor(FwdVisitor&& visitor) noexcept(
                 noexcept(Visitor{FWD(visitor)}))
@@ -23,20 +23,19 @@ namespace scelta
             {
             }
 
-#define DEFINE_BOUND_VISITOR_CALL(m_visitor_type, m_ref_qualifier)            \
-    template <typename... Variants>                                           \
-    constexpr auto operator()(Variants&&... variants) m_ref_qualifier         \
-        SCELTA_NOEXCEPT_AND_TRT(                                              \
-            ::scelta::visit(std::declval<m_visitor_type>(), FWD(variants)...) \
-        )                                                                     \
-    {                                                                         \
-        return ::scelta::visit(                                               \
-            static_cast<m_visitor_type>(*this), FWD(variants)...);            \
+#define DEFINE_BOUND_VISITOR_CALL(m_refq)                                  \
+    template <typename... Variants>                                        \
+    constexpr auto operator()(Variants&&... variants) m_refq               \
+    SCELTA_NOEXCEPT_AND_TRT(                                               \
+        ::scelta::visit(std::declval<Visitor m_refq>(), FWD(variants)...)) \
+    {                                                                      \
+        return ::scelta::visit(                                            \
+            static_cast<Visitor m_refq>(*this), FWD(variants)...);         \
     }
 
-            DEFINE_BOUND_VISITOR_CALL(Visitor&,       &)
-            DEFINE_BOUND_VISITOR_CALL(const Visitor&, const&)
-            DEFINE_BOUND_VISITOR_CALL(Visitor&&,      &&)
+            DEFINE_BOUND_VISITOR_CALL(&)
+            DEFINE_BOUND_VISITOR_CALL(const&)
+            DEFINE_BOUND_VISITOR_CALL(&&)
 
 #undef DEFINE_BOUND_VISITOR_CALL
         };
@@ -53,7 +52,7 @@ namespace scelta
     template <typename... Fs>
     constexpr auto match(Fs&&... fs)
         SCELTA_RETURNS(
-            impl::make_bound_visitor(overload(FWD(fs)...))
+            impl::make_bound_visitor(::scelta::overload(FWD(fs)...))
         )
     // clang-format on
 }

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "../utils.hpp"
+#include "./dispatch.hpp"
 
 // Usage of C++17: nested `namespace`.
 namespace scelta::traits::optional
@@ -22,15 +23,6 @@ namespace scelta::traits::optional
         // clang-format on
     };
 
-// TODO: constexpr
     template <typename T>
-    inline access<T> access_v{};
-
-    // clang-format off
-    template <typename Optional>
-    constexpr auto do_access(Optional&& o)
-        SCELTA_RETURNS(
-            access_v<std::decay_t<Optional>>(FWD(o))
-        )
-    // clang-format on
+    inline constexpr traits::impl::dispatch<access<T>> access_v{};
 }

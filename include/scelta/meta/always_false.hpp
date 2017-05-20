@@ -10,6 +10,9 @@
 // Usage of C++17: nested `namespace`.
 namespace scelta::meta
 {
+    // Used to produce nicer error messages via `static_assert`.
+    // It always evaluates to `std::false_type`, but it doesn't immediately
+    // trigger a static assertion as it depends on `T`.
     template <typename T>
     struct always_false
     {

@@ -44,8 +44,8 @@ namespace scelta::traits::adt
     };
 
     template <typename T>
-    inline constexpr impl::dispatch<visit<T>> visit_v{};
+    inline constexpr traits::impl::dispatch<visit<T>> visit_v{};
 
     template <typename T>
-    inline constexpr impl::dispatch<valid<T>> valid_v{};
+    inline constexpr traits::impl::dispatch<valid<T>> valid_v{};
 }

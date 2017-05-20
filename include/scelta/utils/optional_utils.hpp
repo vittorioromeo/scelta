@@ -9,6 +9,7 @@
 #include "../traits/optional.hpp"
 #include "./homogenizer.hpp"
 #include "./returns.hpp"
+#include "./access_optional.hpp"
 
 namespace scelta
 {
@@ -38,7 +39,7 @@ namespace scelta::impl
     template <typename F, typename Continuation, typename Optional>
     constexpr auto call_with_optional(F&& f, Continuation&& c, Optional&& o)
         SCELTA_RETURNS(
-            o ? FWD(c)(FWD(f)(meta::forward_like<Optional>(::scelta::traits::optional::do_access(o))))
+            o ? FWD(c)(FWD(f)(meta::forward_like<Optional>(::scelta::impl::access_optional(o))))
               : FWD(c)(FWD(f)(to_nullopt()))
         )
 
