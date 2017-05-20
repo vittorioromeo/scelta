@@ -67,6 +67,10 @@ namespace test
 #if defined(SCELTA_SUPPORT_VARIANT_MPARK)
         f(TestCase<mpark::variant>{});
 #endif
+
+#if defined(SCELTA_SUPPORT_VARIANT_TYPE_SAFE)
+        f(TestCase<type_safe::variant>{});
+#endif
     }
 
     template <template <template <typename...> class> class TestCase,
@@ -79,6 +83,10 @@ namespace test
 
 #if defined(SCELTA_SUPPORT_OPTIONAL_BOOST)
         f(TestCase<boost::optional>{});
+#endif
+
+#if defined(SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE)
+        f(TestCase<type_safe::optional>{});
 #endif
     }
 

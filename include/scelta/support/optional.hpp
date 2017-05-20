@@ -7,3 +7,4 @@
 
 #include "./optional/std.hpp"
 #include "./optional/boost.hpp"
+#include "./optional/type_safe.hpp"

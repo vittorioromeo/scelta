@@ -6,6 +6,7 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
 #include <memory>
+#include <vector>
 #include <scelta/recursive.hpp>
 #include <scelta/support.hpp>
 

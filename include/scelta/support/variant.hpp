@@ -9,3 +9,4 @@
 #include "./variant/boost.hpp"
 #include "./variant/eggs.hpp"
 #include "./variant/mpark.hpp"
+#include "./variant/type_safe.hpp"

@@ -5,51 +5,30 @@
 
 #pragma once
 
-#include "./optional_utils.hpp"
+#include "../traits.hpp"
 #include "./returns.hpp"
 #include <type_traits>
 
 // Usage of C++17: nested `namespace`.
 namespace scelta::impl
 {
-    // Usage of C++17: `template <...> typename`.
-    template <template <typename...> typename>
-    struct homogenizer;
-
-    template <typename>
-    struct homogenizer_helper;
-
-    template <template <typename...> class Variant, typename... Ts>
-    struct homogenizer_helper<Variant<Ts...>>
+    struct non_recursive_tag
     {
-        using type = homogenizer<Variant>;
     };
 
-    template <typename T>
-    using homogenizer_helper_t = typename homogenizer_helper<T>::type;
+    template <typename Return>
+    struct recursive_tag
+    {
+        using return_type = Return;
+    };
 
     // clang-format off
-    template <typename Visitor, typename Variant, typename... Variants>
-    constexpr auto visit_homogenizer(
+    template <typename Tag, typename Visitor, typename Variant, typename... Variants>
+    constexpr auto visit_homogenizer(Tag tag,
         Visitor&& visitor, Variant&& variant, Variants&&... variants)
         SCELTA_RETURNS(
-            homogenizer_helper_t<std::decay_t<Variant>>{}(
+            ::scelta::traits::adt::visit_v<std::decay_t<Variant>>(tag,
                 FWD(visitor), FWD(variant), FWD(variants)...)
         )
     // clang-format on
 }
-
-#define SCELTA_DEFINE_HOMOGENIZER_VARIANT(m_type, m_function) \
-    namespace scelta::impl                                    \
-    {                                                         \
-        template <>                                           \
-        struct homogenizer<m_type>                            \
-        {                                                     \
-            template <typename... Ts>                         \
-            constexpr auto operator()(Ts&&... xs) const       \
-                SCELTA_RETURNS(m_function(FWD(xs)...))        \
-        };                                                    \
-    }
-
-#define SCELTA_DEFINE_HOMOGENIZER_OPTIONAL(m_type) \
-    SCELTA_DEFINE_HOMOGENIZER_VARIANT(m_type, visit_optional)

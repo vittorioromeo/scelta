@@ -5,8 +5,5 @@
 
 #pragma once
 
-#include "./meta/copy_cv_ptr_ref.hpp"
-#include "./meta/always_false.hpp"
-#include "./meta/forward_like.hpp"
-#include "./meta/replace_all.hpp"
-#include "./meta/y_combinator.hpp"
+#include "./traits/adt.hpp"
+#include "./traits/optional.hpp"
