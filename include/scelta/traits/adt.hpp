@@ -7,6 +7,7 @@
 
 #include "../meta/always_false.hpp"
 #include "../utils/optional_utils.hpp"
+#include "./dispatch.hpp"
 
 // Usage of C++17: nested `namespace`.
 namespace scelta::traits::adt
@@ -42,11 +43,9 @@ namespace scelta::traits::adt
         }
     };
 
-// TODO: constexpr
     template <typename T>
-    inline visit<T> visit_v{};
+    inline constexpr impl::dispatch<visit<T>> visit_v{};
 
-// TODO: constexpr
     template <typename T>
-    inline valid<T> valid_v{};
+    inline constexpr impl::dispatch<valid<T>> valid_v{};
 }
