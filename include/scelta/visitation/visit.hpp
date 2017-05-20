@@ -16,12 +16,10 @@ namespace scelta
 
     namespace impl
     {
-        template <typename Tag, typename Visitor, typename Variant, typename... Variants>
-        constexpr auto visit_impl(Tag tag,
-            Visitor&& visitor, Variant&& variant, Variants&&... variants)
+        template <typename... Ts>
+        constexpr auto visit_impl(Ts&&... xs)
             SCELTA_RETURNS(
-                impl::visit_homogenizer(tag,
-                    FWD(visitor), FWD(variant), FWD(variants)...)
+                impl::visit_homogenizer(FWD(xs)...)
             )
     }
     // clang-format on

@@ -12,7 +12,7 @@
 // clang-format on
 
 #include "../../utils/homogenizer.hpp"
-#include "../../traits/variant.hpp"
+#include "../../traits.hpp"
 #include "../../utils/linear_overload.hpp"
 #include "../../utils/overload.hpp"
 #include <cassert>
@@ -57,31 +57,36 @@ namespace scelta::impl
 
     template <typename T>
     constexpr auto make_nullvar_ignorer(T&& x)
-        SCELTA_RETURNS(
-            nullvar_ignorer<T&&>{FWD(x)}
-        )
+        SCELTA_RETURNS(nullvar_ignorer<T&&>{FWD(x)})
 }
 
-namespace scelta::impl
+namespace scelta::traits::adt
 {
     template <typename VariantPolicy, typename... Alternatives>
-    struct traits<::type_safe::basic_variant<VariantPolicy, Alternatives...>>
+    struct visit<::type_safe::basic_variant<VariantPolicy, Alternatives...>>
     {
+        // clang-format off
         template <typename Tag, typename Visitor, typename... Ts>
-        static constexpr auto visit(Tag, Visitor&& v, Ts&&... xs)
+        constexpr auto operator()(Tag, Visitor&& v, Ts&&... xs)
             SCELTA_RETURNS(
                 ::type_safe::visit(
                     ::scelta::impl::make_nullvar_ignorer(FWD(v)),
                     FWD(xs)...
                 )
             )
+        // clang-format on
+    };
 
-        template <typename... Variants>
-        static constexpr auto valid_state(Variants&&...)
+    template <typename VariantPolicy, typename... Alternatives>
+    struct valid<::type_safe::basic_variant<VariantPolicy, Alternatives...>>
+    {
+        // clang-format off
+        template <typename... Ts>
+        constexpr auto operator()(Ts&&...)
             SCELTA_RETURNS(
-                // TODO: depends on the policy
-                true
+                true // TODO: depends on policy
             )
+        // clang-format on
     };
 }
 

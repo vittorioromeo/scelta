@@ -12,38 +12,35 @@
 
 #include "../../utils/optional_utils.hpp"
 #include "../../utils/homogenizer.hpp"
-#include "../../traits/optional.hpp"
+#include "../../traits.hpp"
 #include <type_safe/optional.hpp>
 
 #define SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE 1
 
-namespace scelta::impl
+namespace scelta::traits
 {
-    template <typename T>
-    struct traits<::type_safe::optional<T>>
+    namespace adt
     {
-        template <typename Tag, typename... Ts>
-        static constexpr auto visit(Tag, Ts&&... xs)
-            SCELTA_RETURNS(
-                ::scelta::impl::visit_optional(FWD(xs)...)
-            )
+        template <typename T>
+        struct visit<::type_safe::basic_optional<T>> : impl::visit_optional_t
+        {
+        };
+    }
 
-        template <typename... Variants>
-        static constexpr auto valid_state(Variants&&...)
-            SCELTA_RETURNS(
-                true
-            )
-    };
-
-    template <typename T>
-    struct optional_traits<::type_safe::optional<T>>
+    namespace optional
     {
-        template <typename Optional>
-        static constexpr auto access(Optional&& o)
-            SCELTA_RETURNS(
-                FWD(o).value()
-            )
-    };
+        template <typename T>
+        struct access<::type_safe::basic_optional<T>>
+        {
+            // clang-format off
+            template <typename Optional>
+            constexpr auto operator()(Optional&& o)
+                SCELTA_RETURNS(
+                    FWD(o).value()
+                )
+            // clang-format on
+        };
+    }
 }
 
 #endif

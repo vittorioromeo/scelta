@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include "./traits/variant.hpp"
+#include "./traits/adt.hpp"
 #include "./traits/optional.hpp"

@@ -11,27 +11,23 @@
 // clang-format on
 
 #include "../../utils/homogenizer.hpp"
-#include "../../traits/variant.hpp"
+#include "../../traits.hpp"
 #include <boost/variant.hpp>
 
 #define SCELTA_SUPPORT_VARIANT_BOOST 1
 
-namespace scelta::impl
+namespace scelta::traits::adt
 {
-    template <typename... Alternatives>
-    struct traits<::boost::variant<Alternatives...>>
+    template <typename... Alts>
+    struct visit<::boost::variant<Alts...>>
     {
+        // clang-format off
         template <typename Tag, typename... Ts>
-        static constexpr auto visit(Tag, Ts&&... xs)
+        constexpr auto operator()(Tag, Ts&&... xs)
             SCELTA_RETURNS(
                 ::boost::apply_visitor(FWD(xs)...)
             )
-
-        template <typename... Variants>
-        static constexpr auto valid_state(Variants&&...)
-            SCELTA_RETURNS(
-                true
-            )
+        // clang-format on
     };
 }
 
