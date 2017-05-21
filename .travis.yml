@@ -21,13 +21,10 @@ before_install:
       mkdir -p cmake && travis_retry wget --quiet --no-check-certificate  -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
-install:
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
-
 before_script:
     - cd ${TRAVIS_BUILD_DIR}
     - mkdir build && cd build
-    - cmake ..
+    - cmake .. -DCMAKE_C_COMPILER=gcc-7 -DCMAKE_CXX_COMPILER=g++-7
 
 script:
     - cd ${TRAVIS_BUILD_DIR}
