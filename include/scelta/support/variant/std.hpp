@@ -3,6 +3,7 @@
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
 #pragma once
+#ifndef SCELTA_SUPPORT_VARIANT_STD_DISABLE
 
 // clang-format off
 // Usage of C++17: `__has_include`.
@@ -43,4 +44,5 @@ namespace scelta::traits::adt
     };
 }
 
+#endif
 #endif

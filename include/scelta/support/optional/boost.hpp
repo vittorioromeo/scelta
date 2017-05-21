@@ -3,6 +3,7 @@
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
 #pragma once
+#ifndef SCELTA_SUPPORT_OPTIONAL_BOOST_DISABLE
 
 // clang-format off
 // Usage of C++17: `__has_include`.
@@ -45,4 +46,5 @@ namespace scelta::support::optional::boost
 
 // TODO: provide something like "SCELTA_DISABLE_SUPPORT_OPTIONAL_BOOST"
 
+#endif
 #endif
