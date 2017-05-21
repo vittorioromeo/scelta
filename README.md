@@ -9,7 +9,7 @@ C++17 zero-overhead syntactic sugar for `variant` and `optional`.
 
 [badge.build]: https://img.shields.io/travis/SuperV1234/scelta.svg
 [badge.stability]: https://img.shields.io/badge/stability-experimental-orange.svg
-[badge.license]: http://img.shields.io/badge/license-boost-blue.svg
+[badge.license]: http://img.shields.io/badge/license-mit-blue.svg
 [badge.gratipay]: https://img.shields.io/gratipay/user/SuperV1234.svg
 
 [build]: https://travis-ci.org/SuperV1234/scelta
