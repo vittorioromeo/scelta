@@ -2,6 +2,23 @@
 
 C++17 zero-overhead syntactic sugar for `variant` and `optional`.
 
+[![build][badge.build]][build]
+[![stability][badge.stability]][stability]
+[![license][badge.license]][license]
+[![gratipay][badge.gratipay]][gratipay]
+
+[badge.build]: https://img.shields.io/travis/SuperV1234/scelta.svg
+[badge.stability]: https://img.shields.io/badge/stability-experimental-orange.svg
+[badge.license]: http://img.shields.io/badge/license-boost-blue.svg
+[badge.gratipay]: https://img.shields.io/gratipay/user/SuperV1234.svg
+
+[build]: https://travis-ci.org/SuperV1234/scelta
+[stability]: http://github.com/badges/stability-badges
+[license]: https://github.com/SuperV1234/scelta/blob/master/LICENSE
+[gratipay]: https://gratipay.com/~SuperV1234/
+
+
+
 ## Overview
 
 `std::variant` and `std::optional` were introduced to C++17's Standard Library. They are **sum types** that can greatly improve *type safety* and *performance*.

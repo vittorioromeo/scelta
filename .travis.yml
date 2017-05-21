@@ -2,16 +2,34 @@ sudo: require
 language: generic
 compiler: gcc
 dist: trusty
+cache: apt
+os: linux
+
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - gcc-7
+            - g++-7
 
 before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update -qq
+    - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+    - mkdir ${DEPS_DIR} ; cd ${DEPS_DIR}
+    - |
+      CMAKE_URL="http://www.cmake.org/files/v3.8/cmake-3.8.0-Linux-x86_64.tar.gz"
+      mkdir -p cmake && travis_retry wget --quiet --no-check-certificate  -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
 install:
-  - sudo apt-get install -qq g++-7
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
+
+before_script:
+    - cd ${TRAVIS_BUILD_DIR}
+    - mkdir build && cd build
+    - cmake .. -DCMAKE_CXX_COMPILER=${COMPILER} ${CMAKE_OPTIONS}
 
 script:
-  - mkdir build && cd build
-  - cmake -DCMAKE_C_COMPILER=gcc-7 -DCMAKE_CXX_COMPILER=g++-7 ..
-  - make -j4 check
+    - cd ${TRAVIS_BUILD_DIR}
+    - cd build
+    - make -j4 check
