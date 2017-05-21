@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Vittorio Romeo
-// License: Academic Free License ("AFL") v. 3.0
-// AFL License page: http://opensource.org/licenses/AFL-3.0
+// MIT License |  https://opensource.org/licenses/MIT
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
 #if 1

@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Vittorio Romeo
-// License: Academic Free License ("AFL") v. 3.0
-// AFL License page: http://opensource.org/licenses/AFL-3.0
+// MIT License |  https://opensource.org/licenses/MIT
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
 #include "./example_utils.hpp"
@@ -50,11 +49,11 @@ int main()
 
     // clang-format off
     std::cout << scelta::recursive::match<num>(
-        [](auto, const num& x) 
-        { 
-            return x; 
+        [](auto, const num& x)
+        {
+            return x;
         },
-        [](auto recurse, const std::unique_ptr<recr_expr>& x) 
+        [](auto recurse, const std::unique_ptr<recr_expr>& x)
         {
             const auto& lhs = std::get<0>(*x);
             const auto& op  = std::get<1>(*x);

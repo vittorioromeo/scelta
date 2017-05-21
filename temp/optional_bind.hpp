@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Vittorio Romeo
-// License: Academic Free License ("AFL") v. 3.0
-// AFL License page: http://opensource.org/licenses/AFL-3.0
+// MIT License |  https://opensource.org/licenses/MIT
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
 #pragma once
@@ -64,20 +63,20 @@ namespace scelta::impl
                 )
         };
 
-        
+
 
         template <typename Visitor>
         struct binder
         {
             static_assert(std::is_reference_v<Visitor>);
-            
+
             Visitor _visitor;
 
             constexpr binder(Visitor visitor) noexcept
                 : _visitor{FWD(visitor)}
             {
             }
-            
+
             template <typename... Ts>
             constexpr auto operator()(Ts&&... xs) const
                 SCELTA_RETURNS(
@@ -93,7 +92,7 @@ namespace scelta::impl
 
         struct visit_optional_t
         {
-            template <typename Visitor, typename Optional, typename... Optionals>            
+            template <typename Visitor, typename Optional, typename... Optionals>
             constexpr auto operator()(Visitor&& visitor, Optional&& o, Optionals&&... os) const
                 SCELTA_RETURNS(
                     call_with_optional(

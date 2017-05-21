@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Vittorio Romeo
-// License: Academic Free License ("AFL") v. 3.0
-// AFL License page: http://opensource.org/licenses/AFL-3.0
+// MIT License |  https://opensource.org/licenses/MIT
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
 #include "../test_utils.hpp"
@@ -42,12 +41,12 @@ struct test_case
             int acc = 0;
             sr::match<void>([&](auto, int x) { acc += x; },
                             [&](auto recurse, r0& v) { for(auto& x : v) recurse(x); })(v);
-            
-            EXPECT_EQ(acc, 1);  
-             
+
+            EXPECT_EQ(acc, 1);
+
             sr::match<void>([&](auto, int x) { acc += x; },
                             [&](auto recurse, const r0& v) { for(const auto& x : v) recurse(x); })(v);
-            
+
             EXPECT_EQ(acc, 2);
         }
 
@@ -57,12 +56,12 @@ struct test_case
             sr::match<void>([&](auto, int x) { acc += x; },
                             [&](auto recurse, r0& v) { for(auto& x : v) recurse(x); })(v);
 
-            EXPECT_EQ(acc, 2);  
-            
+            EXPECT_EQ(acc, 2);
+
             sr::match<void>([&](auto, int x) { acc += x; },
                             [&](auto recurse, const r0& v) { for(const auto& x : v) recurse(x); })(v);
-            
-            EXPECT_EQ(acc, 4);  
+
+            EXPECT_EQ(acc, 4);
         }
     }
 };
