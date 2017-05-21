@@ -7,10 +7,10 @@
 [![license][badge.license]][license]
 [![gratipay][badge.gratipay]][gratipay]
 
-[badge.build]: https://img.shields.io/travis/SuperV1234/scelta.svg
-[badge.stability]: https://img.shields.io/badge/stability-experimental-orange.svg
-[badge.license]: http://img.shields.io/badge/license-mit-blue.svg
-[badge.gratipay]: https://img.shields.io/gratipay/user/SuperV1234.svg
+[badge.build]: https://img.shields.io/travis/SuperV1234/scelta.svg?style=flat-square
+[badge.stability]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
+[badge.license]: http://img.shields.io/badge/license-mit-blue.svg?style=flat-square
+[badge.gratipay]: https://img.shields.io/gratipay/user/SuperV1234.svg?style=flat-square
 
 [build]: https://travis-ci.org/SuperV1234/scelta
 [stability]: http://github.com/badges/stability-badges
