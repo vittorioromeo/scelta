@@ -1,6 +1,6 @@
 # scelta
 
-C++17 zero-overhead syntactic sugar for `variant` and `optional`.
+> **C++17 zero-overhead syntactic sugar for `variant` and `optional`.**
 
 [![build][badge.build]][build]
 [![stability][badge.stability]][stability]
