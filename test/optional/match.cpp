@@ -12,6 +12,10 @@ TEST_MAIN()
     with_all_optional_implementations<int>( //
         [](auto make)                       //
         {
+            static_assert(std::is_same_v<
+                scelta::traits::adt::nth_alternative<std::decay_t<decltype(make(0))>, 0>,
+                int>);
+
             {
                 auto f = scelta::match(     //
                     [](null) { return 0; }, //

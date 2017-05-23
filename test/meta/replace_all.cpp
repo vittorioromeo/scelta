@@ -41,7 +41,7 @@ TEST_MAIN()
     SA_SAME((replace_all_t<A, B, bag<A, bag<A, A, bag<A, A>>>>),
         (bag<B, bag<B, B, bag<B, B>>>));
 
-    // Pointers/refs/qualifiers are not implicitly replaced
+    // Pointers/refs/qualifiers are NOT implicitly replaced
     SA_NOT_SAME((replace_all_t<A, B, bag<A*>>), (bag<B*>));
     SA_NOT_SAME((replace_all_t<A, B, bag<A&>>), (bag<B&>));
     SA_NOT_SAME((replace_all_t<A, B, bag<const A>>), (bag<const B>));
@@ -49,7 +49,7 @@ TEST_MAIN()
     SA_SAME((replace_all_t<A*, B*, bag<A*>>), (bag<B*>));
     SA_SAME((replace_all_t<const A, const B, bag<const A>>), (bag<const B>));
 
-    // TODO: document move use in recursive
+    // Pointers/refs/qualifiers are implicitly replaced
     SA_SAME((replace_all_copy_cv_ptr_ref_t<A, B, bag<A*>>), (bag<B*>));
     SA_SAME((replace_all_copy_cv_ptr_ref_t<A, B, bag<A&>>), (bag<B&>));
     SA_SAME((replace_all_copy_cv_ptr_ref_t<A, B, bag<const A>>), (bag<const B>));

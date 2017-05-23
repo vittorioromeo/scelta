@@ -25,6 +25,12 @@ namespace scelta::traits
         struct visit<::type_safe::basic_optional<T>> : impl::visit_optional_t
         {
         };
+
+        template <typename T>
+        struct alternatives<::type_safe::basic_optional<T>>
+            : impl::alternative_tuple<typename T::value_type>
+        {
+        };
     }
 
     namespace optional
@@ -32,6 +38,9 @@ namespace scelta::traits
         template <typename T>
         struct access<::type_safe::basic_optional<T>>
         {
+            // `type_safe::basic_optional` does not provide an `operator*`
+            // overload.
+
             // clang-format off
             template <typename Optional>
             constexpr auto operator()(Optional&& o)

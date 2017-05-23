@@ -88,6 +88,13 @@ namespace scelta::traits::adt
             )
         // clang-format on
     };
+
+    template <typename VariantPolicy, typename... Alternatives>
+    struct alternatives<
+        ::type_safe::basic_variant<VariantPolicy, Alternatives...>>
+        : impl::alternative_tuple<Alternatives...>
+    {
+    };
 }
 
 #endif

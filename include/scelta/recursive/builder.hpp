@@ -24,6 +24,10 @@ namespace scelta::recursive
 
         template <typename U>
         using resolve = impl::replace_placeholders<type, U>;
+        // TODO:
+        // * consider moving types with placeholders to the right so that return
+        // type deduction with `experimental::match` is more robust
+        // * nice error message when there are no base cases?
 
     private:
         using resolved_type = resolve<T<Ts...>>;

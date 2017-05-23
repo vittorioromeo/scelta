@@ -11,14 +11,14 @@
 // Usage of C++17: nested `namespace`.
 namespace scelta::meta
 {
-    // Applies `T`'s value category on `Source`.
+    /// @brief Applies `T`'s value category on `Source`.
     template <typename Source, typename T>
     using as_if_forwarded = std::conditional_t< //
         std::is_lvalue_reference_v<Source>,     //
         std::remove_reference_t<T>&,            //
         std::remove_reference_t<T>&&>;
 
-    // Forwards `x` with the same value category as `Source`.
+    /// @brief Forwards `x` with the same value category as `Source`.
     template <typename Source, typename T>
     auto forward_like(T&& x)
         SCELTA_RETURNS(static_cast<as_if_forwarded<Source, T&&>>(x))

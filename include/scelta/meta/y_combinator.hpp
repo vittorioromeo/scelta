@@ -13,6 +13,7 @@ namespace scelta::meta
 {
     namespace impl
     {
+        /// @brief `constexpr`-friendly function object reference wrapper.
         template <typename F>
         struct fn_ref_wrapper
         {
@@ -28,7 +29,7 @@ namespace scelta::meta
             template <typename... Ts>
             constexpr auto operator()(Ts&&... xs) const
                 SCELTA_RETURNS(
-                    (_f)(FWD(xs)...)
+                    FWD(_f)(FWD(xs)...)
                 )
             // clang-format on
         };

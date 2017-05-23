@@ -7,7 +7,7 @@
 #include "./returns.hpp"
 #include <type_traits>
 
-// TODO: cleanup, ref qualifiers
+// TODO: cleanup
 
 namespace scelta
 {
@@ -25,27 +25,26 @@ namespace scelta
             using U = linear_overloader<Ts...>;
             U _u;
 
-#define DEFINE_SELECT(m_refq)                                            \
-private:                                                                 \
-    template <typename... Args,                                          \
-        typename =                                                       \
-            decltype(std::declval<T m_refq>()(std::declval<Args>()...))> \
-    constexpr T m_refq select(int) m_refq noexcept                       \
-    {                                                                    \
-        return static_cast<T m_refq>(*this);                             \
-    }                                                                    \
-                                                                         \
-    template <typename... Args>                                          \
-    constexpr U m_refq select(...) m_refq noexcept                       \
-    {                                                                    \
-        return _u;                                                       \
-    }                                                                    \
-                                                                         \
-public:                                                                  \
-    template <typename... Args>                                          \
-    constexpr decltype(auto) operator()(Args&&... xs) m_refq             \
-    {                                                                    \
-        return select<Args...>(0)(FWD(xs)...);                           \
+#define DEFINE_SELECT(m_refq)                                                 \
+private:                                                                      \
+    template <typename... Args, typename = decltype(std::declval<T m_refq>()( \
+                                    std::declval<Args>()...))>                \
+    constexpr T m_refq select(int) m_refq noexcept                            \
+    {                                                                         \
+        return static_cast<T m_refq>(*this);                                  \
+    }                                                                         \
+                                                                              \
+    template <typename... Args>                                               \
+    constexpr U m_refq select(...) m_refq noexcept                            \
+    {                                                                         \
+        return _u;                                                            \
+    }                                                                         \
+                                                                              \
+public:                                                                       \
+    template <typename... Args>                                               \
+    constexpr decltype(auto) operator()(Args&&... xs) m_refq                  \
+    {                                                                         \
+        return select<Args...>(0)(FWD(xs)...);                                \
     }
 
             DEFINE_SELECT(&)

@@ -26,25 +26,5 @@ namespace scelta::traits::adt
     };
 }
 
-/* TODO: consider
-namespace scelta::support::optional::boost
-{
-    template <typename F>
-    constexpr auto if_supported(F&& f) SCELTA_RETURNS(f())
-}
-*/
-
-#else
-
-/* TODO: consider
-namespace scelta::support::optional::boost
-{
-    template <typename F>
-    constexpr void if_supported(F&&) {}
-}
-*/
-
-// TODO: provide something like "SCELTA_DISABLE_SUPPORT_OPTIONAL_BOOST"
-
 #endif
 #endif

@@ -61,15 +61,15 @@ namespace scelta::meta
             replace_all_impl<remove_cv_ref_ptr_t, copy_cv_ptr_ref_t>;
     }
 
-    // Replaces all occurrences of `Before` with `After` in `T`.
-    // Replacements are applied recursively (for nested types).
-    // CVs/pointer/refs are not "ignored".
+    /// @brief Replaces all exact occurrences of `Before` with `After` in `T`.
+    /// @details Replacements are applied recursively (for nested types).
+    /// CVs/pointer/refs are not "ignored".
     template <typename Before, typename After, typename T>
     using replace_all_t = impl::identity_replacer::apply_t<Before, After, T>;
 
-    // Replaces all occurrences of `Before` with `After` in `T`.
-    // Replacements are applied recursively (for nested types).
-    // CVs/pointer/refs are "ignored" (e.g. `Before&` becomes `After&`).
+    /// @brief Replaces all occurrences of `Before` with `After` in `T`.
+    /// @details Replacements are applied recursively (for nested types).
+    /// CVs/pointer/refs are "ignored" (e.g. `Before&` becomes `After&`).
     template <typename Before, typename After, typename T>
     using replace_all_copy_cv_ptr_ref_t =
         impl::copy_cv_ref_ptr_replacer::apply_t<Before, After, T>;
