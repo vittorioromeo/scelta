@@ -62,7 +62,7 @@ using original_decay_first_alternative = ::scelta::traits::adt::first_alternativ
                 return meta::y_combinator(
                     // Recurse on this lambda via Y combinator to pass it back
                     // as part of the bound `recurse` argument.
-                    [&o](auto self, auto&&... xs) mutable // TODO: potential dangling ref?
+                    [o = std::move(o)](auto self, auto&&... xs) mutable
                         -> Return
                     {
                         // Invoke the overload...

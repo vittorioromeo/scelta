@@ -143,6 +143,25 @@ int main() { return 0; }
 g++ -std=c++1z main.cpp -Isome_path/scelta/include
 ```
 
+### Running tests
+
+Tests can be easily built and run using [CMake](https://cmake.org/).
+
+```bash
+git clone https://github.com/SuperV1234/scelta && cd scelta
+./init-repository.sh # get `vrm_cmake` dependency
+mkdir build && cd build
+
+cmake ..
+make check # build and run tests
+```
+
+All tests currently pass on `Arch Linux x64` with:
+
+* `g++ (GCC) 8.0.0 20170514 (experimental)`
+
+* `clang version 5.0.0 (trunk 303617)`
+
 ### Integration with existing project
 
 1. Add this repository and [SuperV1234/vrm_cmake](https://github.com/SuperV1234/vrm_cmake) as submodules of your project, in subfolders inside `your_project/extlibs/`:
@@ -165,4 +184,209 @@ g++ -std=c++1z main.cpp -Isome_path/scelta/include
 
 ## Documentation
 
-TODO
+### `scelta::visit`
+
+Executes non-recursive visitation.
+
+* Interface:
+
+    ```cpp
+    template <typename Visitor, typename... Visitables>
+    constexpr /*deduced*/ visit(Visitor&& visitor, Visitables&&... visitables)
+        noexcept(/*deduced*/);
+    ```
+
+    * `visitables...` must all be the same type. *(i.e. different implementations of variant/optional currently cannot be mixed together)*
+
+    * `visitor` must be invocable with all the alternatives of the passed visitables.
+
+* Examples:
+
+    ```cpp
+    struct visitor
+    {
+        auto operator()(int) { return 0; }
+        auto operator()(char){ return 1; }
+    };
+
+    variant<int, char> v0{'a'};
+    assert(
+        scelta::visit(visitor{}, v0) == 1
+    );
+    ```
+
+    ```cpp
+    struct visitor
+    {
+        auto operator()(int)              { return 0; }
+        auto operator()(scelta::nullopt_t){ return 1; }
+    };
+
+    optional<int> o0{0};
+    assert(
+        scelta::visit(visitor{}, o0) == 0
+    );
+    ```
+
+
+
+### `scelta::match`
+
+Executes non-recursive in-place visitation.
+
+* Interface:
+
+    ```cpp
+    template <typename... FunctionObjects>
+    constexpr /*deduced*/ match(FunctionObjects&&... functionObjects)
+        noexcept(/*deduced*/)
+    {
+        return [o = overload(functionObjects...)](auto&&... visitables)
+            noexcept(/*deduced*/)
+            -> /*deduced*/
+        {
+            // ... perform visitation with `scelta::visit` ...
+        };
+    };
+    ```
+
+    * Invoking `match` takes a number of `functionObjects...` and returns a new function which takes a number of `visitables...`.
+
+    * `visitables...` must all be the same type. *(i.e. different implementations of variant/optional currently cannot be mixed together)*
+
+    * `o` must be invocable with all the alternatives of the passed visitables. *(i.e. the overload of all `functionObjects...` must produce an exhaustive visitor)*
+
+* Examples:
+
+    ```cpp
+    variant<int, char> v0{'a'};
+    assert(
+        scelta::match([](int) { return 0; }
+                      [](char){ return 1; })(v0) == 1
+    );
+    ```
+
+    ```cpp
+    optional<int> o0{0};
+    assert(
+        scelta::match([](int)              { return 0; }
+                      [](scelta::nullopt_t){ return 1; })(o0) == 1
+    );
+    ```
+
+
+
+### `scelta::recursive::builder`
+
+Allows placeholder-based definition of recursive ADTs.
+
+* Interface:
+
+    ```cpp
+    template <typename ADT>
+    class builder;
+
+    struct placeholder;
+
+    template <typename Builder>
+    using type = /* ... recursive ADT type wrapper ... */;
+
+    template <typename Builder, typename T>
+    using resolve = /* ... resolved ADT alternative ... */;
+    ```
+
+    * `builder` takes any ADT containing zero or more `placeholder` alternatives. *(i.e. both optional and variant)*
+
+    * `placeholder` is replaced with the recursive ADT itself when using `type` or `resolve`.
+
+    * `type` returns a wrapper around a fully-resolved recursive `ADT`.
+
+    * `resolve` returns a fully-resolved alternative contained in `ADT`.
+
+* Examples:
+
+    ```cpp
+    using _ = scelta::recursive::placeholder;
+    using b = scelta::recursive::builder<variant<int, _*>>;
+
+    using recursive_adt = scelta::recursive::type<b>;
+    using ptr_alternative = scelta::recursive::resolve<b, _*>;
+
+    recursive_adt v0{0};
+    recursive_adt v1{&v0};
+    ```
+
+### `scelta::recursive::visit`
+
+Executes recursive visitation.
+
+* Interface:
+
+    ```cpp
+    template <typename Return, typename Visitor, typename... Visitables>
+    constexpr Return visit(Visitor&& visitor, Visitables&&... visitables)
+        noexcept(false);
+    ```
+
+    * Similar to `scelta::match`, but requires an explicit return type and is not `noexcept`-friendly.
+
+    * The `operator()` overloads of `visitor...` must take one extra generic argument to receive the `recurse` helper.
+
+* Examples:
+
+    ```cpp
+    using _ = scelta::recursive::placeholder;
+    using b = scelta::recursive::builder<variant<int, std::vector<_>>>;
+
+    using recursive_adt = scelta::recursive::type<b>;
+    using rvec = scelta::recursive::resolve<b, std::vector<_>>;
+
+    struct visitor
+    {
+        auto operator()(auto,         int x)  { /* base case */ },
+        auto operator()(auto recurse, rvec& v){ for(auto& x : v) recurse(x); }
+    };
+
+    recursive_adt v0{rvec{recursive_adt{0}, recursive_adt{1}}};
+    scelta::recursive::visit(visitor{}, v0};
+    ```
+
+### `scelta::recursive::match`
+
+Executes recursive visitation.
+
+* Interface:
+
+    ```cpp
+    template <typename Return, typename... FunctionObjects>
+    constexpr auto match(FunctionObjects&&... functionObjects)
+        noexcept(false)
+    {
+        return [o = overload(functionObjects...)](auto&&... visitables)
+            noexcept(false)
+            -> Return
+        {
+            // ... perform visitation with `scelta::recursive::visit` ...
+        };
+    };
+    ```
+
+    * Similar to `scelta::visit`, but requires an explicit return type and is not `noexcept`-friendly.
+
+    * The passed `functionObjects...` must take one extra generic argument to receive the `recurse` helper.
+
+* Examples:
+
+    ```cpp
+    using _ = scelta::recursive::placeholder;
+    using b = scelta::recursive::builder<variant<int, std::vector<_>>>;
+
+    using recursive_adt = scelta::recursive::type<b>;
+    using rvec = scelta::recursive::resolve<b, std::vector<_>>;
+
+    recursive_adt v0{rvec{recursive_adt{0}, recursive_adt{1}}};
+    scelta::recursive::match(
+        [](auto,         int x)  { /* base case */ },
+        [](auto recurse, rvec& v){ for(auto& x : v) recurse(x); }
+    )(v0);
+    ```

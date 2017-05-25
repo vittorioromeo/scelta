@@ -6,9 +6,10 @@
 
 #include "../meta/forward_like.hpp"
 #include "../traits/optional.hpp"
+#include "./access_optional.hpp"
 #include "./homogenizer.hpp"
 #include "./returns.hpp"
-#include "./access_optional.hpp"
+#include "../traits/adt/valid.hpp"
 
 namespace scelta
 {
@@ -48,7 +49,11 @@ namespace scelta::impl
         Visitor&& visitor, Optional&& o, Optionals&&... os) ->decltype(auto)
         // SCELTA_NOEXCEPT_AND_TRT(FWD(visitor)(to_nullopt(), to_nullopt(os)...))
     {
-        return call_with_optional(
+        return
+            SCELTA_CONSTEXPR_ASSERT(
+                ::scelta::traits::adt::valid_v<std::decay_t<Optional>>(o, os...)
+            ),
+            call_with_optional(
             // Binds the first "unpacked" optional to the visitor.
             // Returns a the next visitor with the bound value, which will
             // be passed to the continuation function.

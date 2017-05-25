@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "../traits.hpp"
 #include "../utils.hpp"
 
 namespace scelta
@@ -15,11 +16,21 @@ namespace scelta
 
     namespace impl
     {
-        template <typename... Ts>
-        constexpr auto visit_impl(Ts&&... xs)
-            SCELTA_RETURNS(
-                impl::visit_homogenizer(FWD(xs)...)
+        constexpr void visit_impl() noexcept { return; }
+
+        template <typename Tag, typename Visitor, typename Variant, typename... Variants>
+        constexpr auto visit_impl(Tag tag,
+            Visitor&& visitor, Variant&& v, Variants&&... vs)
+            SCELTA_NOEXCEPT_AND_TRT(
+                impl::visit_homogenizer(tag, FWD(visitor), FWD(v), FWD(vs)...)
             )
+        {
+            return
+                SCELTA_CONSTEXPR_ASSERT(
+                    ::scelta::traits::adt::valid_v<std::decay_t<Variant>>(v, vs...)
+                ),
+                impl::visit_homogenizer(tag, FWD(visitor), FWD(v), FWD(vs)...);
+        }
     }
     // clang-format on
 
