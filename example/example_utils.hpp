@@ -19,6 +19,8 @@ namespace example
         ::eggs::variant
 #elif defined(SCELTA_SUPPORT_VARIANT_MPARK)
         ::mpark::variant
+#elif defined(SCELTA_SUPPORT_VARIANT_TYPE_SAFE)
+        ::type_safe::variant
 #else
 #error "No variant type available."
 #endif
@@ -32,6 +34,8 @@ namespace example
         ::std::optional
 #elif defined(SCELTA_SUPPORT_OPTIONAL_BOOST)
         ::boost::optional
+#elif defined(SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE)
+        ::type_safe::optional
 #else
 #error "No optional type available."
 #endif

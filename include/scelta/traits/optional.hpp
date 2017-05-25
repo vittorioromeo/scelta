@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../utils.hpp"
+#include "../utils/returns.hpp"
 #include "./dispatch.hpp"
 
 // Usage of C++17: nested `namespace`.

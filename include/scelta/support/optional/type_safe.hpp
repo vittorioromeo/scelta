@@ -10,9 +10,10 @@
 #if __has_include(<type_safe/optional.hpp>)
 // clang-format on
 
-#include "../../utils/optional_utils.hpp"
-#include "../../utils/homogenizer.hpp"
-#include "../../traits.hpp"
+#include "../../traits/adt/visit.hpp"
+#include "../../traits/adt/alternatives.hpp"
+#include "../../traits/optional.hpp"
+#include "../../utils/returns.hpp"
 #include <type_safe/optional.hpp>
 
 #define SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE 1

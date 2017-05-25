@@ -4,8 +4,10 @@
 
 #pragma once
 
-#include "../traits.hpp"
-#include "../utils.hpp"
+#include "../traits/adt/valid.hpp"
+#include "../utils/returns.hpp"
+#include "../utils/assert.hpp"
+#include "../utils/homogenizer.hpp"
 
 namespace scelta
 {

@@ -4,14 +4,10 @@
 
 #pragma once
 
-#include "../meta/forward_like.hpp"
-#include "../meta/replace_all.hpp"
 #include "../meta/y_combinator.hpp"
 #include "../utils/fwd.hpp"
-#include "../utils/returns.hpp"
 #include "../visitation/visit.hpp"
 #include "./visit.hpp"
-#include <type_traits>
 
 namespace scelta::recursive
 {

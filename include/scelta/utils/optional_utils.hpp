@@ -5,11 +5,10 @@
 #pragma once
 
 #include "../meta/forward_like.hpp"
-#include "../traits/optional.hpp"
-#include "./access_optional.hpp"
-#include "./homogenizer.hpp"
-#include "./returns.hpp"
 #include "../traits/adt/valid.hpp"
+#include "./access_optional.hpp"
+#include "./assert.hpp"
+#include "./returns.hpp"
 
 namespace scelta
 {

@@ -6,7 +6,6 @@
 
 #include "../utils/fwd.hpp"
 #include "../utils/returns.hpp"
-#include <utility>
 
 // Usage of C++17: nested `namespace`.
 namespace scelta::traits::impl

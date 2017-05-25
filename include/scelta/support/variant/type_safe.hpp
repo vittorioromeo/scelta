@@ -11,10 +11,12 @@
     __has_include(<type_safe/visitor.hpp>)
 // clang-format on
 
-#include "../../utils/homogenizer.hpp"
-#include "../../traits.hpp"
+#include "../../traits/adt/visit.hpp"
+#include "../../traits/adt/valid.hpp"
+#include "../../traits/adt/alternatives.hpp"
 #include "../../utils/linear_overload.hpp"
 #include "../../utils/overload.hpp"
+#include "../../utils/returns.hpp"
 #include <cassert>
 #include <type_safe/variant.hpp>
 #include <type_safe/visitor.hpp>

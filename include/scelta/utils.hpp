@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "./utils/access_optional.hpp"
 #include "./utils/assert.hpp"
 #include "./utils/fwd.hpp"
 #include "./utils/homogenizer.hpp"

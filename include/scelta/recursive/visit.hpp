@@ -4,11 +4,8 @@
 
 #pragma once
 
-#include "../meta/forward_like.hpp"
-#include "../meta/replace_all.hpp"
-#include "../meta/y_combinator.hpp"
+#include "../meta/copy_cv_ptr_ref.hpp"
 #include "../utils/fwd.hpp"
-#include "../utils/returns.hpp"
 #include "../visitation/visit.hpp"
 #include "./original_type.hpp"
 #include <type_traits>
@@ -22,8 +19,8 @@ namespace scelta::recursive
     template <typename Return, typename Visitor, typename... Variants>
     constexpr Return visit(Visitor&& visitor, Variants&&... variants)
     {
-        return ::scelta::impl::visit_impl(::scelta::impl::recursive_tag<Return>{},
-            FWD(visitor),
+        return ::scelta::impl::visit_impl(
+            ::scelta::impl::recursive_tag<Return>{}, FWD(visitor),
             static_cast<meta::copy_cv_ptr_ref_t<Variants&&,
                 impl::original_type_t<std::decay_t<Variants>>>>(variants)...);
     }

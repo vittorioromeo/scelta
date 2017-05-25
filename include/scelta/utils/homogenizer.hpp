@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../traits.hpp"
+#include "../traits/adt/visit.hpp"
 #include "./returns.hpp"
 #include <type_traits>
 

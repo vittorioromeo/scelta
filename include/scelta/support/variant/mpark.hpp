@@ -10,8 +10,9 @@
 #if __has_include(<mpark/variant.hpp>)
 // clang-format on
 
-#include "../../utils/homogenizer.hpp"
-#include "../../traits.hpp"
+#include "../../traits/adt/visit.hpp"
+#include "../../traits/adt/valid.hpp"
+#include "../../utils/returns.hpp"
 #include <mpark/variant.hpp>
 
 #define SCELTA_SUPPORT_VARIANT_MPARK 1

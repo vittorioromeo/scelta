@@ -11,8 +11,9 @@
 // clang-format on
 
 // Usage of C++17: `<variant>`.
-#include "../../utils/homogenizer.hpp"
-#include "../../traits.hpp"
+#include "../../traits/adt/visit.hpp"
+#include "../../traits/adt/valid.hpp"
+#include "../../utils/returns.hpp"
 #include <variant>
 
 #define SCELTA_SUPPORT_VARIANT_STD 1

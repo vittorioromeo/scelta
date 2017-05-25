@@ -24,7 +24,7 @@
 
 * [Overview](#overview)
 * [Installation/usage](#installationusage)
-* [documentation](#documentation)
+* [Documentation](#documentation)
 
 
 
@@ -151,7 +151,7 @@ int main() { return 0; }
 g++ -std=c++1z main.cpp -Isome_path/scelta/include
 ```
 
-### Running tests
+### Running tests and examples
 
 Tests can be easily built and run using [CMake](https://cmake.org/).
 
@@ -162,6 +162,9 @@ mkdir build && cd build
 
 cmake ..
 make check # build and run tests
+
+make example_error_handling # error handling via pattern matching
+make example_expression     # recursive expression evaluation
 ```
 
 All tests currently pass on `Arch Linux x64` with:

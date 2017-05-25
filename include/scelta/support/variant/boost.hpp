@@ -10,8 +10,8 @@
 #if __has_include(<boost/variant.hpp>)
 // clang-format on
 
-#include "../../utils/homogenizer.hpp"
-#include "../../traits.hpp"
+#include "../../traits/adt/visit.hpp"
+#include "../../utils/returns.hpp"
 #include <boost/variant.hpp>
 
 #define SCELTA_SUPPORT_VARIANT_BOOST 1

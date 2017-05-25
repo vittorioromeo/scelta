@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include "../traits.hpp"
+#include "../traits/optional.hpp"
 #include "./returns.hpp"
+#include <type_traits>
 
 // Usage of C++17: nested `namespace`.
 namespace scelta::impl

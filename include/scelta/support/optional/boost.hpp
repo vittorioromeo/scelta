@@ -11,8 +11,7 @@
 // clang-format on
 
 #include "../../utils/optional_utils.hpp"
-#include "../../utils/homogenizer.hpp"
-#include "../../traits.hpp"
+#include "../../traits/adt/visit.hpp"
 #include <boost/optional.hpp>
 #include <boost/none.hpp>
 
