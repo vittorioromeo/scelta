@@ -25,6 +25,7 @@
 * [Overview](#overview)
 * [Installation/usage](#installationusage)
 * [Documentation](#documentation)
+* [Resources](#resources)
 
 
 
@@ -411,3 +412,9 @@ Executes recursive visitation.
         [](auto recurse, rvec& v){ for(auto& x : v) recurse(x); }
     )(v0);
     ```
+
+
+
+## Resources
+
+* ACCU 2017 talk: [**"Implementing variant Visitation Using Lambdas"**](https://www.youtube.com/watch?v=mqei4JJRQ7s)
