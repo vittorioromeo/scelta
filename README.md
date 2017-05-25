@@ -65,7 +65,7 @@ However, there are some problems with them:
 * `type_safe::optional`
 
 
-Other implementation can be easily adapted by providing specializations of the helper `traits` and `optional_traits` structs. PRs are welcome!
+Other implementation can be easily adapted by providing specializations of the helper `traits` structs. PRs are welcome!
 
 ### Curried visitation syntax
 
