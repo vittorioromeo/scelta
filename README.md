@@ -60,9 +60,6 @@ However, there are some problems with them:
 * `mpark::variant`
 * `eggs::variant`
 * `type_safe::variant`
-
-<br>
-
 * `std::optional`
 * `boost::optional`
 * `type_safe::optional`
