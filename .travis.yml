@@ -30,3 +30,5 @@ script:
     - cd ${TRAVIS_BUILD_DIR}
     - cd build
     - make -j4 check
+    - make example_error_handling
+    - make example_expression
