@@ -53,7 +53,20 @@ However, there are some problems with them:
 
 ### Implementation independent
 
-`scelta` detects and works out-of-the-box with `std::variant`, `std::optional`, `boost::variant`, `mpark::variant`, `boost::optional`, and `eggs::variant`.
+`scelta` detects and works out-of-the-box with:
+
+* `std::variant`
+* `boost::variant`
+* `mpark::variant`
+* `eggs::variant`
+* `type_safe::variant`
+
+<br>
+
+* `std::optional`
+* `boost::optional`
+* `type_safe::optional`
+
 
 Other implementation can be easily adapted by providing specializations of the helper `traits` and `optional_traits` structs. PRs are welcome!
 
