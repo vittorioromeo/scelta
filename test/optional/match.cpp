@@ -1,6 +1,7 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
 #include <scelta/visitation.hpp>
+#include <scelta/traits/adt/alternatives.hpp>
 
 TEST_MAIN()
 {
