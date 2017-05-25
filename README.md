@@ -20,6 +20,14 @@
 
 
 
+## Table of Contents
+
+* [Overview](#overview)
+* [Installation/usage](#installationusage)
+* [documentation](#documentation)
+
+
+
 ## Overview
 
 `std::variant` and `std::optional` were introduced to C++17's Standard Library. They are **sum types** that can greatly improve *type safety* and *performance*.
