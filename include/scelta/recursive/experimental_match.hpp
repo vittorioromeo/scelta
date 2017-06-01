@@ -14,8 +14,8 @@
 #include "./visit.hpp"
 #include "./match.hpp"
 #include "./original_type.hpp"
-#include "../traits.hpp"
-#include <experimental/type_traits>
+#include "../traits/adt/is_visitable.hpp"
+#include "../traits/adt/alternatives.hpp"
 #include <type_traits>
 
 namespace scelta::experimental::recursive
@@ -39,14 +39,12 @@ namespace scelta::experimental::recursive
         */
 
         template <typename T>
-        using is_visitable_impl = decltype(::scelta::traits::adt::visit<std::decay_t<T>>{});
+        using original_decay_t =
+            ::scelta::recursive::impl::original_type_t<std::decay_t<T>>;
 
         template <typename T>
-        inline constexpr auto is_visitable_v =
-            std::experimental::is_detected_v<is_visitable_impl, T>;
-
-template <typename T>
-using original_decay_first_alternative = ::scelta::traits::adt::first_alternative<::scelta::recursive::impl::original_type_t<std::decay_t<T>>>;
+        using original_decay_first_alternative_t =
+            ::scelta::traits::adt::first_alternative<original_decay_t<T>>;
 
         template <typename T>
         struct tw { using type = T ; };
@@ -84,17 +82,23 @@ using original_decay_first_alternative = ::scelta::traits::adt::first_alternativ
         }
 
         template <typename Return, typename BCO>
-        struct with_bound_base_cases : private BCO // "base case overload"
+        struct with_bound_base_cases : private BCO // "base case overload", EBO
         {
             template <typename BCOFwd>
-            constexpr with_bound_base_cases(BCOFwd&& bco) noexcept(noexcept(BCO(FWD(bco)))) : BCO(FWD(bco)) { }
+            constexpr with_bound_base_cases(BCOFwd&& bco) noexcept(
+                noexcept(BCO(FWD(bco))))
+                : BCO(FWD(bco))
+            {
+            }
 
             template <typename... RecursiveCases>
             constexpr auto operator()(RecursiveCases&&... rcs)
             {
-                if constexpr((!is_visitable_v<RecursiveCases&&> && ...)) // if there are no recursive cases
+                constexpr bool has_recursive_cases = (::scelta::traits::adt::is_visitable_v<RecursiveCases&&> && ...);
+
+                if constexpr(!has_recursive_cases)
                 {
-                    // binary base case overload
+                    // base case overload with one extra argument (+1 arity)
                     auto adapted_bco = [bco = static_cast<BCO&&>(*this)]
                         (auto, auto&&... xs) mutable SCELTA_NOEXCEPT_AND_TRT(std::declval<BCO&&>()(FWD(xs)...)) {
                             return bco(FWD(xs)...);
@@ -109,8 +113,9 @@ using original_decay_first_alternative = ::scelta::traits::adt::first_alternativ
                         using rt = std::conditional_t<
                             std::is_same_v<Return, deduce_rt>,
 
-                            // result of calling BCO& with the first alternative of each variant
-                            decltype(std::declval<BCO&>()(std::declval<original_decay_first_alternative<decltype(vs)>>()...)),
+                            // result of calling BCO& (unadapted overload) with the first alternative of each variant
+                            std::result_of_t<BCO&(original_decay_first_alternative_t<decltype(vs)>...)>,
+                            //decltype(std::declval<BCO&>()(std::declval<original_decay_first_alternative_t<decltype(vs)>>()...)),
 
                             // user-specified result
                             Return
@@ -126,20 +131,29 @@ using original_decay_first_alternative = ::scelta::traits::adt::first_alternativ
                 }
             }
         };
+
+        // clang-format off
+        template <typename Return, typename... Fs>
+        constexpr auto make_bound_base_cases(Fs&&... fs)
+            SCELTA_RETURNS(
+                with_bound_base_cases<
+                    Return,
+                    std::decay_t<decltype(::scelta::overload(FWD(fs)...))>
+                >{::scelta::overload(FWD(fs)...)}
+            )
+        // clang-format on
     }
 
-    // First `match` invocation takes a bunch of base cases.
-    // TODO: deduce `Return` from base cases?
-    // TODO: check if there are no recursive cases and prevent useless `()` syntax?
-    // TODO: SCELTA_RETURNS
+    // First `match` invocation takes one or more base cases.
+    // Second invocation takes zero or more recursive cases.
+    // Return type can be optionally specified explicitly (deduced by default).
+    // clang-format off
     template <typename Return = impl::deduce_rt, typename... BaseCases>
     constexpr auto match(BaseCases&&... bcs)
         SCELTA_RETURNS(
-            impl::with_bound_base_cases<
-                Return,
-                std::decay_t<decltype(::scelta::overload(FWD(bcs)...))>
-            >{::scelta::overload(FWD(bcs)...)}
+            impl::make_bound_base_cases<Return>(FWD(bcs)...)
         )
+    // clang-format on
 }
 
 // TODO: complete
