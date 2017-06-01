@@ -413,7 +413,69 @@ Executes recursive visitation.
     )(v0);
     ```
 
+### `scelta::experimental::match`
 
+**(work-in-progress)**
+
+Executes visitation *(both non-recursive and recursive)*. Attempts to deduce the return type from the base cases, optionally supports user-provided explicit return type.
+
+* Interface:
+
+    ```cpp
+    template <typename Return = impl::deduce_t, typename... BaseCases>
+    constexpr auto match(BaseCases&&... baseCases)
+    {
+        return [bco = overload(adapt(baseCases)...)](auto... xs)
+        {
+            if constexpr(are_visitables<decltype(xs)...>())
+            {
+                // ... perform visitation with `scelta::visit` ...
+            }
+            else
+            {
+                return [o = overload(bco, xs...)](auto&&... visitables)
+                {
+                    // ... perform visitation with `scelta::recursive_visit` ...
+                };
+            }
+        };
+    };
+    ```
+
+    * The first invocation of `scelta::experimental::match` takes one or more *base cases*. A base case is a function object with the same arity as the number of objects that will be visited.
+
+    * The function returned by the first invocation takes either a number of *recursive cases* or a number of *visitables*.
+
+        * Recursive cases are function objects with arity equal to the number of objects that will be visited plus one *(the +1 is for the `recurse` argument)*.
+
+        * Visitables are variants or optionals. If visitables are passed here, non-recursive visitation will be performed immediately.
+
+    * If recursive cases were passed, the last returned function takes any number of visitables. Recursive visitation will then be performed immediately.
+
+* Examples:
+
+    ```cpp
+    variant<int, char> v0{'a'};
+    assert(
+        scelta::experimental::match([](int) { return 0; }
+                                    [](char){ return 1; })(v0) == 1
+    );
+    ```
+
+    ```cpp
+    using _ = scelta::recursive::placeholder;
+    using b = scelta::recursive::builder<variant<int, std::vector<_>>>;
+
+    using recursive_adt = scelta::recursive::type<b>;
+    using rvec = scelta::recursive::resolve<b, std::vector<_>>;
+
+    recursive_adt v0{rvec{recursive_adt{0}, recursive_adt{1}}};
+    scelta::experimental::match(
+        [](int x){ /* base case */ }
+    )(
+        [](auto recurse, rvec& v){ for(auto& x : v) recurse(x); }
+    )(v0);
+    ```
 
 ## Resources
 
