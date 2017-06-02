@@ -47,3 +47,5 @@ project/extlibs/*
 **callgrind.*db
 db-wal
 db
+
+__pycache__
