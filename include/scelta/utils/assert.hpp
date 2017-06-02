@@ -17,6 +17,6 @@
 
 #else
 
-#define SCELTA_CONSTEXPR_ASSERT() void(0)
+#define SCELTA_CONSTEXPR_ASSERT(...) void(0)
 
 #endif
