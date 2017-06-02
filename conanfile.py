@@ -9,7 +9,7 @@ class SceltaConan(ConanFile):
 
     def source(self):
         self.run("git clone https://github.com/SuperV1234/scelta.git")
-        self.run("cd scelta && git checkout v0.1 && ./init-repository.sh")
+        self.run("cd scelta && git checkout v0.1 && git submodule update --init")
 
     def package(self):
         self.copy("*.hpp", dst="include", src="scelta/include")
