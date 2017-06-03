@@ -11,7 +11,7 @@ class HelloTestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        os.chdir("../../..")
+        os.chdir("../../../")
 
         if not os.path.exists("build"):
             os.mkdir("build")
