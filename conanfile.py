@@ -10,7 +10,7 @@ class SceltaConan(ConanFile):
 
     def source(self):
         self.run("git clone https://github.com/SuperV1234/scelta.git")
-        self.run("cd scelta && git checkout conan_support && git submodule update --init")
+        self.run("cd scelta && git checkout v0.1 && git submodule update --init")
 
     def build(self):
         cmake = CMake(self)
