@@ -11,15 +11,9 @@ class HelloTestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        os.chdir("../../../")
-
-        if not os.path.exists("build"):
-            os.mkdir("build")
-
-        os.chdir("build")
-        self.run("cmake .. %s" % cmake.command_line)
+        self.run('cmake "%s" %s' % (self.conanfile_directory, cmake.command_line))
         self.run("cmake --build . %s" % cmake.build_config)
-        self.run("make check -j8")
 
     def test(self):
-        ()
+        os.chdir("bin")
+        self.run(".%sexample" % os.sep)
