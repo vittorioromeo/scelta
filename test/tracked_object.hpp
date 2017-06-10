@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include "./test_utils.hpp"
 #include <iostream>
 #include <map>
 #include <string>
-#include "./test_utils.hpp"
 
 namespace testing
 {
@@ -168,21 +168,27 @@ namespace testing
 
             auto& exactly(int x)
             {
-                get_ostream() << "exactly `" << x << "`\n";
+                get_ostream() << "exactly `" << x << "`\n"
+                              << "(they are: `" << _v << "`)\n";
+
                 EXPECT_OP(_v, ==, x);
                 return _mb;
             }
 
             auto& more_than(int x)
             {
-                get_ostream() << "more than `" << x << "`\n";
+                get_ostream() << "more than `" << x << "`\n"
+                              << "(they are: `" << _v << "`)\n";
+
                 EXPECT_OP(_v, >, x);
                 return _mb;
             }
 
             auto& less_than(int x)
             {
-                get_ostream() << "less than `" << x << "`\n";
+                get_ostream() << "less than `" << x << "`\n"
+                              << "(they are: `" << _v << "`)\n";
+
                 EXPECT_OP(_v, <, x);
                 return _mb;
             }
@@ -272,10 +278,10 @@ namespace testing
             }
 
         public:
-#define DEFINE_MAKE_TRACKED_OBJECT(name, type)                        \
-    template <typename... Ts>                                         \
-    auto name(Ts&&... xs)                                             \
-    {                                                                 \
+#define DEFINE_MAKE_TRACKED_OBJECT(name, type)        \
+    template <typename... Ts>                         \
+    auto name(Ts&&... xs)                             \
+    {                                                 \
         return make_tracked_object<type>(FWD(xs)...); \
     }
 

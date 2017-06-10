@@ -192,8 +192,8 @@ struct test_case
                                    (ctx.template make_tracked_object<f>("B"));
             }).expect_that("A").ctors(1)
                                .no_copies()
-                               .moves(2)
-                               .dtors(3);
+                               .moves(5)
+                               .dtors(6);
         }
 
         type v0{0};

@@ -14,12 +14,10 @@ addons:
             - llvm-toolchain-trusty
             - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-        packages:
-            - gcc-7
-            - g++-7
-            - clang-5.0
 
 before_install:
+    - sudo apt-get update -q
+    - sudo apt-get install clang-5.0 gcc-7 g++-7 -y
     - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
     - mkdir ${DEPS_DIR} ; cd ${DEPS_DIR}
     - |
@@ -32,7 +30,7 @@ before_script:
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-5.0" CC="clang-5.0"; fi
     - cd ${TRAVIS_BUILD_DIR}
     - mkdir build && cd build
-    - cmake ..
+    - cmake -DAUGMENT_TESTS=1 ..
 
 script:
     - cd ${TRAVIS_BUILD_DIR}
