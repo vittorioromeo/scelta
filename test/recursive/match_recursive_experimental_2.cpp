@@ -147,7 +147,8 @@ struct test_case
             EXPECT_EQ(m(v3), (int)'b');
         }
 
-        // value category testing
+        // value category testing (no recursive case)
+        // make sure that currying and calling the curried match doesn't affect the visitors
         {
             Variant<int> v0{42};
 
@@ -168,20 +169,31 @@ struct test_case
                                .moves(2)
                                .dtors(3);
 
-            testing::check_operations([&](auto& ctx) {
+            testing::check_operations([&](auto& ctx)
+            {
                 auto m = ser::match(ctx.template make_tracked_object<f>("A"));
                 m(v0);
                 m(v0);
                 m(v0);
                 m(v0);
-            })
-                .expect_that("A")
-                .ctors(1)
-                .no_copies()
-                .moves(2)
-                .dtors(3);
+            }).expect_that("A").ctors(1)
+                               .no_copies()
+                               .moves(2)
+                               .dtors(3);
+        }
 
-            // TODO: use tracked_object
+        // value category testing (recursive case)
+        {
+            testing::check_operations([&](auto& ctx)
+            {
+                type v0{42};
+
+                auto m = ser::match(ctx.template make_tracked_object<f>("A"))
+                                   (ctx.template make_tracked_object<f>("B"));
+            }).expect_that("A").ctors(1)
+                               .no_copies()
+                               .moves(2)
+                               .dtors(3);
         }
 
         type v0{0};
