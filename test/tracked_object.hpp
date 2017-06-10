@@ -65,7 +65,7 @@ namespace testing
         public:
             template <typename... Ts>
             tracked_object(operation_context& ctx, obj_id id, Ts&&... xs)
-                : _ctx{&ctx}, _id{std::move(id)}, T(FWD(xs)...)
+                : T(FWD(xs)...), _ctx{&ctx}, _id{std::move(id)}
             {
                 get_ostream() << _id << "()\n";
                 inc_ctor();
@@ -79,7 +79,7 @@ namespace testing
 
 
             tracked_object(const tracked_object& rhs)
-                : _ctx{rhs._ctx}, _id{rhs._id}, T{static_cast<const T&>(rhs)}
+                : T{static_cast<const T&>(rhs)}, _ctx{rhs._ctx}, _id{rhs._id}
             {
                 get_ostream() << _id << "(const" << _id << "&)\n";
                 inc_copy();
@@ -87,9 +87,9 @@ namespace testing
 
             tracked_object& operator=(const tracked_object& rhs)
             {
+                static_cast<T&>(*this) = static_cast<T&>(rhs);
                 _ctx = rhs._ctx;
                 _id = rhs._id;
-                static_cast<T&>(*this) = static_cast<T&>(rhs);
 
                 get_ostream()
                     << "tracked_object& operator=(const " << _id << "&)\n";
@@ -98,8 +98,8 @@ namespace testing
             }
 
             tracked_object(tracked_object&& rhs)
-                : _ctx{std::move(rhs._ctx)}, _id{rhs._id}, T{static_cast<T&&>(
-                                                               rhs)}
+                : T{static_cast<T&&>(rhs)}, _ctx{std::move(rhs._ctx)},
+                  _id{rhs._id}
             {
                 get_ostream() << _id << "(" << _id << "&&)\n";
                 inc_move();
@@ -107,9 +107,9 @@ namespace testing
 
             tracked_object& operator=(tracked_object&& rhs)
             {
+                static_cast<T&>(*this) = static_cast<T&&>(rhs);
                 _ctx = std::move(rhs._ctx);
                 _id = std::move(rhs._id);
-                static_cast<T&>(*this) = static_cast<T&&>(rhs);
 
                 get_ostream() << _id << "& operator=(" << _id << "&&)\n";
                 inc_move();

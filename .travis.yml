@@ -2,7 +2,7 @@ sudo: require
 language: cpp
 compiler:
     - gcc
-    - clang
+#   - clang
 dist: trusty
 cache: apt
 os: linux

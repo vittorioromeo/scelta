@@ -193,7 +193,49 @@ struct test_case
             }).expect_that("A").ctors(1)
                                .no_copies()
                                .moves(5)
-                               .dtors(6);
+                               .dtors(6)
+              .expect_that("B").ctors(1)
+                               .no_copies()
+                               .moves(2)
+                               .dtors(3);
+
+            testing::check_operations([&](auto& ctx)
+            {
+                type v0{42};
+
+                auto m = ser::match(ctx.template make_tracked_object<f>("A"))
+                                   (ctx.template make_tracked_object<f>("B"));
+
+                m(v0);
+            }).expect_that("A").ctors(1)
+                               .no_copies()
+                               .moves(5)
+                               .dtors(6)
+              .expect_that("B").ctors(1)
+                               .no_copies()
+                               .moves(2)
+                               .dtors(3);
+
+            testing::check_operations([&](auto& ctx)
+            {
+                type v0{42};
+
+                auto m = ser::match(ctx.template make_tracked_object<f>("A"))
+                                   (ctx.template make_tracked_object<f>("B"));
+
+                m(v0);
+                m(v0);
+                m(v0);
+                m(v0);
+                m(v0);
+            }).expect_that("A").ctors(1)
+                               .no_copies()
+                               .moves(5)
+                               .dtors(6)
+              .expect_that("B").ctors(1)
+                               .no_copies()
+                               .moves(2)
+                               .dtors(3);
         }
 
         type v0{0};
