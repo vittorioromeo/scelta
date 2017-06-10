@@ -35,13 +35,13 @@ namespace scelta::experimental::recursive
         using original_decay_first_alternative_t =
             ::scelta::traits::adt::first_alternative<original_decay_t<T>>;
 
-        template <typename BCO> // TODO: this is not really a bco, it's an overload of everything
-        struct unresolved_visitor : BCO
+        template <typename O>
+        struct unresolved_visitor : O
         {
-            template <typename BCOFwd>
-            constexpr unresolved_visitor(BCOFwd&& bco)
-                noexcept(noexcept(BCO{FWD(bco)}))
-                : BCO{FWD(bco)}
+            template <typename OFwd>
+            constexpr unresolved_visitor(OFwd&& o) noexcept(
+                noexcept(O{FWD(o)}))
+                : O{FWD(o)}
             {
             }
 
@@ -53,9 +53,9 @@ namespace scelta::experimental::recursive
                     // Recurse on this lambda via Y combinator to pass it back
                     // as part of the bound `recurse` argument.
                     [this](auto self, auto&&... xs) mutable->Return {
-                    // TODO: does `this` live long enough?
+                        // TODO: does `this` live long enough?
                         // Invoke the overload...
-                        return static_cast<BCO&>(*this)(
+                        return static_cast<O&>(*this)(
 
                             // Passing a visitor that invokes `self` to the
                             // `recurse` argument.
@@ -88,10 +88,10 @@ namespace scelta::experimental::recursive
             {
             }
 
-            template <typename... RecursiveCases>
-            constexpr auto operator()(RecursiveCases&&... rcs)
+            template <typename... Xs>
+            constexpr auto operator()(Xs&&... xs)
             {
-                constexpr bool has_recursive_cases = !(::scelta::traits::adt::is_visitable_v<RecursiveCases&&> && ...);
+                constexpr bool has_recursive_cases = !(::scelta::traits::adt::is_visitable_v<Xs&&> && ...);
 
                 if constexpr(has_recursive_cases)
                 {
@@ -101,9 +101,10 @@ namespace scelta::experimental::recursive
                             return bco(FWD(xs)...);
                         };
 
-                    auto o = overload(std::move(adapted_bco), FWD(rcs)...);
+                    auto o = overload(std::move(adapted_bco), FWD(xs)...);
                     return [rv = make_unresolved_visitor(std::move(o))](auto&&... vs) mutable
                     {
+                        // TODO: SFINAE out the conditional because result_of might create instantiation error
                         using rt = std::conditional_t<
                             std::is_same_v<Return, deduce_rt>,
 
@@ -120,7 +121,7 @@ namespace scelta::experimental::recursive
                 }
                 else
                 {
-                    return ::scelta::visit(static_cast<BCO&>(*this), FWD(rcs)...);
+                    return ::scelta::visit(static_cast<BCO&>(*this), FWD(xs)...);
                 }
             }
         };

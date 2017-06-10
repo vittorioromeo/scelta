@@ -3,6 +3,7 @@
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
 #include "../test_utils.hpp"
+#include "../tracked_object.hpp"
 #include "../variant_test_utils.hpp"
 #include <memory>
 #include <scelta/recursive.hpp>
@@ -13,6 +14,14 @@
 namespace sr = scelta::recursive;
 namespace ser = scelta::experimental::recursive;
 using _ = sr::placeholder;
+
+struct f
+{
+    template <typename... Ts>
+    constexpr auto operator()(Ts&&...) const noexcept
+    {
+    }
+};
 
 template <template <typename...> typename Variant>
 struct test_case
@@ -136,6 +145,43 @@ struct test_case
             EXPECT_EQ(m(v1), (int)'a');
             EXPECT_EQ(m(v2), 43);
             EXPECT_EQ(m(v3), (int)'b');
+        }
+
+        // value category testing
+        {
+            Variant<int> v0{42};
+
+            testing::check_operations([](auto& ctx)
+            {
+                auto m = ser::match(ctx.template make_tracked_object<f>("A"));
+            }).expect_that("A").ctors(1)
+                               .no_copies()
+                               .moves(2)
+                               .dtors(3);
+
+            testing::check_operations([&](auto& ctx)
+            {
+                auto m = ser::match(ctx.template make_tracked_object<f>("A"));
+                m(v0);
+            }).expect_that("A").ctors(1)
+                               .no_copies()
+                               .moves(2)
+                               .dtors(3);
+
+            testing::check_operations([&](auto& ctx) {
+                auto m = ser::match(ctx.template make_tracked_object<f>("A"));
+                m(v0);
+                m(v0);
+                m(v0);
+                m(v0);
+            })
+                .expect_that("A")
+                .ctors(1)
+                .no_copies()
+                .moves(2)
+                .dtors(3);
+
+            // TODO: use tracked_object
         }
 
         type v0{0};

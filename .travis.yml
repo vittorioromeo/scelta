@@ -1,6 +1,8 @@
 sudo: require
-language: generic
-compiler: gcc
+language: cpp
+compiler:
+    - gcc
+    - clang
 dist: trusty
 cache: apt
 os: linux
@@ -9,9 +11,13 @@ addons:
     apt:
         sources:
             - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty
+            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty main'
+              key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
         packages:
             - gcc-7
             - g++-7
+            - clang-5.0
 
 before_install:
     - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
@@ -22,13 +28,14 @@ before_install:
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
 before_script:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-5.0" CC="clang-5.0"; fi
     - cd ${TRAVIS_BUILD_DIR}
     - mkdir build && cd build
-    - cmake .. -DCMAKE_C_COMPILER=gcc-7 -DCMAKE_CXX_COMPILER=g++-7
+    - cmake ..
 
 script:
     - cd ${TRAVIS_BUILD_DIR}
     - cd build
-    - make -j4 check
-    - make example_error_handling
-    - make example_expression
+    - cmake --build .
+    - cmake --build . --target check
