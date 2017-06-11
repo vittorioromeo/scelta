@@ -40,14 +40,17 @@ set -x
 echo 'Setting up the script...'
 # Exit with nonzero exit code if anything fails
 set -e
+ls
 
 # Create a clean working directory for this script.
 mkdir code_docs
 cd code_docs
+ls
 
 # Get the current gh-pages branch
 git clone -b gh-pages https://git@$GH_REPO_REF
 cd $GH_REPO_NAME
+ls
 
 ##### Configure git.
 # Set the push default to simple i.e. push only the current branch.
