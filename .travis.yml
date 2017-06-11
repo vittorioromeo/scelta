@@ -47,17 +47,17 @@ before_install:
 before_script:
     - if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-5.0" CC="clang-5.0"; fi
-   # - cd ${TRAVIS_BUILD_DIR}
-   # - mkdir build && cd build
-   # - cmake -DAUGMENT_TESTS=1 ..
+    - cd ${TRAVIS_BUILD_DIR}
+    - mkdir build && cd build
+    - cmake -DAUGMENT_TESTS=1 ..
 
 script:
     - cd ${TRAVIS_BUILD_DIR}
-   # - cd build
-   # - cmake --build .
-   # - cmake --build . --target check
+    - cd build
+    - cmake --build .
+    - cmake --build . --target check
 
 after_success:
-    - cd ${TRAVIS_BUILD_DIR}
+    - cd $TRAVIS_BUILD_DIR
     - chmod +x generate-docs.sh
     - ./generate-docs.sh
