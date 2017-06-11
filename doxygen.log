@@ -3,16 +3,14 @@ Warning: ignoring unsupported tag `TOC_INCLUDE_HEADINGS   =' at line 313, file /
 Warning: ignoring unsupported tag `GROUP_NESTED_COMPOUNDS =' at line 370, file /home/travis/build/SuperV1234/scelta/Doxyfile
 Warning: ignoring unsupported tag `HIDE_COMPOUND_REFERENCE=' at line 541, file /home/travis/build/SuperV1234/scelta/Doxyfile
 Warning: ignoring unsupported tag `WARN_AS_ERROR          =' at line 765, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `LATEX_EXTRA_STYLESHEET =' at line 1743, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `LATEX_TIMESTAMP        =' at line 1810, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `RTF_SOURCE_CODE        =' at line 1876, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `MAN_SUBDIR             =' at line 1911, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `DOCBOOK_PROGRAMLISTING =' at line 1974, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `PLANTUML_JAR_PATH      =' at line 2403, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `PLANTUML_CFG_FILE      =' at line 2408, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: ignoring unsupported tag `PLANTUML_INCLUDE_PATH  =' at line 2413, file /home/travis/build/SuperV1234/scelta/Doxyfile
-Warning: tag INPUT: input source `./include' does not exist
-warning: source ./include is not a readable file or directory... skipping.
+Warning: ignoring unsupported tag `LATEX_EXTRA_STYLESHEET =' at line 1748, file /home/travis/build/SuperV1234/scelta/Doxyfile
+Warning: ignoring unsupported tag `LATEX_TIMESTAMP        =' at line 1815, file /home/travis/build/SuperV1234/scelta/Doxyfile
+Warning: ignoring unsupported tag `RTF_SOURCE_CODE        =' at line 1881, file /home/travis/build/SuperV1234/scelta/Doxyfile
+Warning: ignoring unsupported tag `MAN_SUBDIR             =' at line 1916, file /home/travis/build/SuperV1234/scelta/Doxyfile
+Warning: ignoring unsupported tag `DOCBOOK_PROGRAMLISTING =' at line 1979, file /home/travis/build/SuperV1234/scelta/Doxyfile
+Warning: ignoring unsupported tag `PLANTUML_JAR_PATH      =' at line 2408, file /home/travis/build/SuperV1234/scelta/Doxyfile
+Warning: ignoring unsupported tag `PLANTUML_CFG_FILE      =' at line 2413, file /home/travis/build/SuperV1234/scelta/Doxyfile
+Warning: ignoring unsupported tag `PLANTUML_INCLUDE_PATH  =' at line 2418, file /home/travis/build/SuperV1234/scelta/Doxyfile
 Searching for include files...
 Searching for example files...
 Searching for images...
@@ -21,6 +19,7 @@ Searching for msc files...
 Searching for dia files...
 Searching for files to exclude
 Searching for files to process...
+Searching for files in directory /home/travis/build/SuperV1234/scelta/code_docs/scelta
 Reading and parsing tag files
 Parsing files
 Building group list...
