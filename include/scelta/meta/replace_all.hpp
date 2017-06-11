@@ -64,12 +64,26 @@ namespace scelta::meta
     /// @brief Replaces all exact occurrences of `Before` with `After` in `T`.
     /// @details Replacements are applied recursively (for nested types).
     /// CVs/pointer/refs are not "ignored".
+    /// @code{.cpp}
+    /// using src = A<A<B<A<B<C, B*>>>>>
+    /// using res = replace_all_t<B, X, src>;
+    /// static_assert(std::is_same_v<res,
+    ///    A<A<X<A<X<C, B*>>>>>
+    /// >);
+    /// @endcode
     template <typename Before, typename After, typename T>
     using replace_all_t = impl::identity_replacer::apply_t<Before, After, T>;
 
     /// @brief Replaces all occurrences of `Before` with `After` in `T`.
     /// @details Replacements are applied recursively (for nested types).
     /// CVs/pointer/refs are "ignored" (e.g. `Before&` becomes `After&`).
+    /// @code{.cpp}
+    /// using src = A<A<B<A<B<C, B*>>>>>
+    /// using res = replace_all_t<B, X, src>;
+    /// static_assert(std::is_same_v<res,
+    ///    A<A<X<A<X<C, X*>>>>>
+    /// >);
+    /// @endcode
     template <typename Before, typename After, typename T>
     using replace_all_copy_cv_ptr_ref_t =
         impl::copy_cv_ref_ptr_replacer::apply_t<Before, After, T>;
