@@ -17,8 +17,8 @@ branches:
 env:
   global:
     - GH_REPO_NAME: scelta
-    - DOXYFILE: $TRAVIS_BUILD_DIR/<path_to_your_doxygen_configuration_file>
-    - GH_REPO_REF: github.com/<your_name>/<your_repo>.git
+    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
+    - GH_REPO_REF: github.com/SuperV1234/scelta.git
 
 addons:
     apt:
