@@ -1,3 +1,6 @@
+# Doxygen stuff by Jeroen de Bruijn:
+# https://gist.github.com/vidavidorra/548ffbcdae99d752da02
+
 sudo: require
 language: cpp
 compiler:
@@ -7,6 +10,16 @@ dist: trusty
 cache: apt
 os: linux
 
+branches:
+  except:
+    - gh-pages
+
+env:
+  global:
+    - GH_REPO_NAME: scelta
+    - DOXYFILE: $TRAVIS_BUILD_DIR/<path_to_your_doxygen_configuration_file>
+    - GH_REPO_REF: github.com/<your_name>/<your_repo>.git
+
 addons:
     apt:
         sources:
@@ -14,6 +27,12 @@ addons:
             - llvm-toolchain-trusty
             - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
+        packages:
+            - doxygen
+            - doxygen-doc
+            - doxygen-latex
+            - doxygen-gui
+            - graphviz
 
 before_install:
     - sudo apt-get update -q
@@ -37,3 +56,8 @@ script:
     - cd build
     - cmake --build .
     - cmake --build . --target check
+
+after_success:
+    - cd $TRAVIS_BUILD_DIR
+    - chmod +x generate-docs.sh
+    - ./generate-docs.sh

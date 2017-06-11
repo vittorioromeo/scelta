@@ -1,4 +1,5 @@
 .clang-format
+docs
 .clang_complete
 .vscode
 
