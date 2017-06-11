@@ -1,4 +1,5 @@
 .clang-format
+html
 code_docs
 docs
 .clang_complete
