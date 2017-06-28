@@ -24,8 +24,8 @@
 [license]: https://github.com/SuperV1234/scelta/blob/master/LICENSE
 [gratipay]: https://gratipay.com/~SuperV1234/
 [conan]: https://www.conan.io/source/scelta/0.1/SuperV1234/experimental
-[wandbox]: https://wandbox.org/permlink/wSA55OCJz17k7Jtz
-[godbolt]: https://godbolt.org/g/4sQtkM
+[on-wandbox]: https://wandbox.org/permlink/wSA55OCJz17k7Jtz
+[on-godbolt]: https://godbolt.org/g/4sQtkM
 
 
 
