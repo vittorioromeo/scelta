@@ -5,6 +5,7 @@
 #pragma once
 
 #include <type_traits>
+#include "./fwd.hpp"
 
 #define SCELTA_NOEXCEPT_AND_TRT_ENABLE_IF(m_condition, ...) \
     noexcept(noexcept(__VA_ARGS__))                         \
