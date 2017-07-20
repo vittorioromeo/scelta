@@ -39,5 +39,19 @@ TEST_MAIN()
                 auto v = make('c');
                 scelta::visit(f, v);
             }
+
+            {
+                int a;
+                int b;
+                auto f = scelta::overload(         //
+                    [&](int) -> int& { return a; }, //
+                    [&](auto) -> int& { return b; });
+
+                auto v0 = make(1);
+                EXPECT_EQ(&scelta::visit(f, v0), &a);
+
+                auto v1 = make('a');
+                EXPECT_EQ(&scelta::visit(f, v1), &b);
+            }
         });
 }

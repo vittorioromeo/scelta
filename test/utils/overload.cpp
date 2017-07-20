@@ -81,6 +81,17 @@ TEST_MAIN()
         EXPECT_EQ(l1('a'), 0);
     }
 
+    {
+        int a;
+        int b;
+        auto f = scelta::overload(         //
+            [&](int) -> int& { return a; }, //
+            [&](auto) -> int& { return b; });
+
+        EXPECT_EQ(&f(0), &a);
+        EXPECT_EQ(&f('a'), &b);
+    }
+
     /*
     // ref overload
     {

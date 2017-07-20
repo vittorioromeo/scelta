@@ -34,6 +34,18 @@ TEST_MAIN()
                     [](float)  { EXPECT(false); }, //
                     [](char x) { EXPECT_OP(x, ==, 'c'); })(v);
             }
+
+
+            {
+                int a;
+                int b;
+
+                auto v = make(1);
+                EXPECT_EQ(&a,                            //
+                    &scelta::match(                      //
+                        [&](int)  -> int& { return a; }, //
+                        [&](auto) -> int& { return b; })(v));
+            }
         });
     // clang-format on
 }

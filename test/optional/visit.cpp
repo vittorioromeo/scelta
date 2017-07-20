@@ -33,6 +33,17 @@ TEST_MAIN()
                 EXPECT_EQ(scelta::visit(f, make(0), make()),  2);
                 EXPECT_EQ(scelta::visit(f, make(0), make(0)), 3);
             }
+
+            {
+                int a = 0;
+                int b = 0;
+                auto f = scelta::overload(  //
+                    [&](null) -> int& { return a; }, //
+                    [&](int)  -> int& { return b; });
+
+                EXPECT_EQ(&scelta::visit(f, make()),  &a);
+                EXPECT_EQ(&scelta::visit(f, make(0)), &b);
+            }
         });
     // clang-format on
 }
