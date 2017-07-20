@@ -59,7 +59,7 @@ int main()
             const auto& op  = std::get<1>(*x);
             const auto& rhs = recurse(std::get<2>(*x));
 
-            return scelta::match([&](o_add){ return lhs + rhs; },
+            return scelta::experimental::recursive::match([&](o_add){ return lhs + rhs; },
                                  [&](o_sub){ return lhs - rhs; },
                                  [&](o_mul){ return lhs * rhs; },
                                  [&](o_div){ return lhs / rhs; })(op);

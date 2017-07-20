@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    return scelta::match(
+    return scelta::experimental::recursive::match(
         [](const io_outcome::success& x) { std::cout << x._contents << std::endl;        return 0; },
         [](const io_outcome::not_found&) { std::cerr << "File not found\n" << std::endl; return 1; })
         (read_file(argv[1]));
