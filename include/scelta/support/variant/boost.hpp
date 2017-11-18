@@ -6,7 +6,6 @@
 #ifndef SCELTA_SUPPORT_VARIANT_BOOST_DISABLE
 
 // clang-format off
-// Usage of C++17: `__has_include`.
 #if __has_include(<boost/variant.hpp>)
 // clang-format on
 

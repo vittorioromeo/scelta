@@ -6,7 +6,6 @@
 
 #include <type_traits>
 
-// Usage of C++17: nested `namespace`.
 namespace scelta::meta
 {
     /// @brief Removes cv-qualifiers and references from `T`.

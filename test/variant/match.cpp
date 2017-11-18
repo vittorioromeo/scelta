@@ -1,6 +1,7 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
 #include <scelta/visitation.hpp>
+#include <scelta/recursive/experimental_match.hpp>
 
 TEST_MAIN()
 {
@@ -13,7 +14,7 @@ TEST_MAIN()
         {
             {
                 auto v = make(1);
-                scelta::match(                          //
+                scelta::experimental::recursive::match(                          //
                     [](int x) { EXPECT_OP(x, ==, 1); }, //
                     [](float) { EXPECT(false); },       //
                     [](char)  { EXPECT(false); })(v);
@@ -21,7 +22,7 @@ TEST_MAIN()
 
             {
                 auto v = make(2.f);
-                scelta::match(                              //
+                scelta::experimental::recursive::match(                              //
                     [](int)     { EXPECT(false); },         //
                     [](float x) { EXPECT_OP(x, ==, 2.f); }, //
                     [](char)    { EXPECT(false); })(v);
@@ -29,7 +30,7 @@ TEST_MAIN()
 
             {
                 auto v = make('c');
-                scelta::match(                     //
+                scelta::experimental::recursive::match(                     //
                     [](int)    { EXPECT(false); }, //
                     [](float)  { EXPECT(false); }, //
                     [](char x) { EXPECT_OP(x, ==, 'c'); })(v);
@@ -42,7 +43,7 @@ TEST_MAIN()
 
                 auto v = make(1);
                 EXPECT_EQ(&a,                            //
-                    &scelta::match(                      //
+                    &scelta::experimental::recursive::match(                      //
                         [&](int)  -> int& { return a; }, //
                         [&](auto) -> int& { return b; })(v));
             }

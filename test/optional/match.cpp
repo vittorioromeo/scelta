@@ -2,6 +2,7 @@
 #include "../variant_test_utils.hpp"
 #include <scelta/visitation.hpp>
 #include <scelta/traits/adt/alternatives.hpp>
+#include <scelta/recursive/experimental_match.hpp>
 
 TEST_MAIN()
 {
@@ -18,7 +19,7 @@ TEST_MAIN()
                 int>);
 
             {
-                auto f = scelta::match(     //
+                auto f = scelta::experimental::recursive::match(     //
                     [](null) { return 0; }, //
                     [](int)  { return 1; });
 
@@ -27,7 +28,7 @@ TEST_MAIN()
             }
 
             {
-                auto f = scelta::match(           //
+                auto f = scelta::experimental::recursive::match(           //
                     [](null, null) { return 0; }, //
                     [](null, int)  { return 1; }, //
                     [](int,  null) { return 2; }, //

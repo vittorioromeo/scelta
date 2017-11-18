@@ -6,19 +6,27 @@
 
 #include "../utils/fwd.hpp"
 #include "../utils/returns.hpp"
+#include <type_traits>
 
-namespace scelta::traits::impl
+namespace scelta::meta
 {
-    // Without `dispatch` every user-provided trait specialization would require
-    // `const` in `operator()`.
-    template <typename Trait>
-    struct dispatch
+    /// @brief `constexpr`-friendly function object reference wrapper.
+    template <typename F>
+    struct fn_ref_wrapper
     {
+        static_assert(std::is_reference_v<F>);
+
+        F _f;
+
+        constexpr fn_ref_wrapper(F f) noexcept : _f{FWD(f)}
+        {
+        }
+
         // clang-format off
         template <typename... Ts>
         constexpr auto operator()(Ts&&... xs) const
             SCELTA_RETURNS(
-                Trait{}(FWD(xs)...)
+                FWD(_f)(FWD(xs)...)
             )
         // clang-format on
     };

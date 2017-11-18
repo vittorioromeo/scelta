@@ -1,4 +1,5 @@
 .clang-format
+buildgcc
 buildcl
 html
 code_docs

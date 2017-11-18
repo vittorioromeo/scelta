@@ -7,7 +7,6 @@
 #include "../utils/returns.hpp"
 #include <type_traits>
 
-// Usage of C++17: nested `namespace`.
 namespace scelta::meta
 {
     /// @brief Applies `T`'s value category on `Source`.

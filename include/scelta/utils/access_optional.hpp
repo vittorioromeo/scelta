@@ -8,7 +8,6 @@
 #include "./returns.hpp"
 #include <type_traits>
 
-// Usage of C++17: nested `namespace`.
 namespace scelta::impl
 {
     // clang-format off

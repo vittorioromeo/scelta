@@ -6,7 +6,6 @@
 #ifndef SCELTA_SUPPORT_VARIANT_MPARK_DISABLE
 
 // clang-format off
-// Usage of C++17: `__has_include`.
 #if __has_include(<mpark/variant.hpp>)
 // clang-format on
 

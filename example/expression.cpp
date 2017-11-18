@@ -48,22 +48,20 @@ int main()
     expr e = recr(2, o_mul{}, recr(5, o_add{}, recr(15, o_div{}, 3)));
 
     // clang-format off
-    std::cout << scelta::recursive::match<num>(
-        [](auto, const num& x)
-        {
-            return x;
-        },
+    std::cout << scelta::experimental::recursive::match<num>(
+        [](const num& x){ return x; }
+    )(
         [](auto recurse, const std::unique_ptr<recr_expr>& x)
         {
             const auto& lhs = std::get<0>(*x);
             const auto& op  = std::get<1>(*x);
             const auto& rhs = recurse(std::get<2>(*x));
 
-            return scelta::experimental::recursive::match([&](o_add){ return lhs + rhs; },
-                                 [&](o_sub){ return lhs - rhs; },
-                                 [&](o_mul){ return lhs * rhs; },
-                                 [&](o_div){ return lhs / rhs; })(op);
-        })
-        (e);
+            return scelta::experimental::recursive::match(
+                [&](o_add){ return lhs + rhs; },
+                [&](o_sub){ return lhs - rhs; },
+                [&](o_mul){ return lhs * rhs; },
+                [&](o_div){ return lhs / rhs; })(op);
+    })(e);
     // clang-format on
 }

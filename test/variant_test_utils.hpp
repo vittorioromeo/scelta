@@ -74,11 +74,9 @@ namespace test
         f(TestCase<mpark::variant>{});
 #endif
 
-/* TODO: type_safe is currently broken
 #if defined(SCELTA_SUPPORT_VARIANT_TYPE_SAFE)
         f(TestCase<type_safe::variant>{});
 #endif
-*/
     }
 
     template <template <template <typename...> class> class TestCase,

@@ -123,17 +123,15 @@ namespace scelta::experimental::recursive
                 // "Base case overload" with one extra argument (+1 arity).
                 auto adapted_bco = [bco = static_cast<BCO&&>(*this)] //
                     (auto, auto&&... ys) mutable                     //
-                    SCELTA_NOEXCEPT_AND_TRT(std::declval<BCO&&>()(FWD(ys)...))
-                {
-                    return bco(FWD(ys)...);
-                };
+                    SCELTA_NOEXCEPT_AND_TRT(std::declval<BCO&&>()(FWD(ys)...)) {
+                        return bco(FWD(ys)...);
+                    };
 
                 // Overload of "adapted BCO" and "recursive cases".
                 auto o = overload(std::move(adapted_bco), FWD(xs)...);
 
                 return [urv = make_unresolved_visitor(std::move(o))](
-                    auto&&... vs) mutable->decltype(auto)
-                {
+                           auto&&... vs) mutable -> decltype(auto) {
                     using rt = applied_return_type<Return, BCO&,
                         original_decay_first_alternative_t<decltype(vs)>...>;
 

@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include "./meta/copy_cv_ptr_ref.hpp"
 #include "./meta/always_false.hpp"
+#include "./meta/copy_cv_ptr_ref.hpp"
+#include "./meta/fn_ref_wrapper.hpp"
 #include "./meta/forward_like.hpp"
 #include "./meta/replace_all.hpp"
 #include "./meta/y_combinator.hpp"

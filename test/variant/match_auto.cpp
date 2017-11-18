@@ -1,5 +1,6 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
+#include <scelta/recursive/experimental_match.hpp>
 #include <scelta/visitation.hpp>
 
 // clang-format off
@@ -58,7 +59,7 @@ TEST_MAIN()
         {
             {
                 auto v = make(a{});
-                scelta::match(
+                scelta::experimental::recursive::match(
                     [](a x) {                return x.foo(); },
                     [](b x) { EXPECT(false); return x.bar(); },
                     [](c x) { EXPECT(false); return x.bar(); })(v);
@@ -83,19 +84,19 @@ TEST_MAIN()
                 * http://stackoverflow.com/questions/43982799
                 */
 
-                scelta::match(
+                scelta::experimental::recursive::match(
                     [](a x)                         {                return x.foo(); },
                     [](auto x) -> decltype(x.bar()) { EXPECT(false); return x.bar(); })(v);
             }
 
             {
                 auto v = make(b{});
-                scelta::match(
+                scelta::experimental::recursive::match(
                     [](a x) { EXPECT(false); return x.foo(); },
                     [](b x) {                return x.bar(); },
                     [](c x) { EXPECT(false); return x.bar(); })(v);
 
-                scelta::match(
+                scelta::experimental::recursive::match(
                     [](a x)                         { EXPECT(false); return x.foo(); },
                     [](auto x) -> decltype(x.bar()) {                return x.bar(); })(v);
                 // TODO: match linearly?

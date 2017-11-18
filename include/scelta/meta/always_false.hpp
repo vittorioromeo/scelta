@@ -6,7 +6,6 @@
 
 #include <type_traits>
 
-// Usage of C++17: nested `namespace`.
 namespace scelta::meta
 {
     /// @brief Wrapper around `std::false_type`.
@@ -14,9 +13,8 @@ namespace scelta::meta
     /// It always evaluates to `std::false_type`, but it doesn't immediately
     /// trigger a static assertion as it depends on `T`.
     template <typename T>
-    struct always_false
+    struct always_false : std::false_type
     {
-        using type = std::false_type;
     };
 
     /// @brief Type alias for `always_false`.

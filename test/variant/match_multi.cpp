@@ -1,5 +1,6 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
+#include <scelta/recursive/experimental_match.hpp>
 #include <scelta/visitation.hpp>
 
 struct a
@@ -25,7 +26,7 @@ TEST_MAIN()
         [](auto make)                 //
         {
             {
-                auto f = scelta::match(     //
+                auto f = scelta::experimental::recursive::match(     //
                     [](a, a) { return 0; }, //
                     [](a, b) { return 1; }, //
                     [](b, b) { return 2; }, //

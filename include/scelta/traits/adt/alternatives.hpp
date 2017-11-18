@@ -7,7 +7,6 @@
 #include "../dispatch.hpp"
 #include <tuple>
 
-// Usage of C++17: nested `namespace`.
 namespace scelta::traits::adt
 {
     namespace impl

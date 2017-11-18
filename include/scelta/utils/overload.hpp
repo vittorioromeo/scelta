@@ -14,7 +14,6 @@ namespace scelta
         template <typename... Ts>
         struct overloader : Ts...
         {
-            // Usage of C++17: fold expression.
             template <typename... Args>
             constexpr overloader(Args&&... xs) noexcept(
                 (noexcept(Ts{FWD(xs)}) && ...))
@@ -22,7 +21,6 @@ namespace scelta
             {
             }
 
-            // Usage of C++17: variadic `using`-directive.
             using Ts::operator()...;
         };
     }

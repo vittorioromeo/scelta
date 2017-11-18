@@ -6,7 +6,6 @@
 #ifndef SCELTA_SUPPORT_VARIANT_TYPE_SAFE_DISABLE
 
 // clang-format off
-// Usage of C++17: `__has_include`.
 #if __has_include(<type_safe/variant.hpp>) && \
     __has_include(<type_safe/visitor.hpp>)
 // clang-format on
