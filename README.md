@@ -140,10 +140,30 @@ using int_tree = impl::type;
 using int_tree_vector = impl::vector_type;
 ```
 
-After defining recursive structures, *in place recursive visitation* is also possible.
+After defining recursive structures, *in place recursive visitation* is also possible. `scelta` provides two ways of performing recursive visitation:
+
+* `scelta::match(/* base cases */)(/* recursive cases */)(/* visitables */)`
+
+    This is an "homogeneous" `match` function that works for both non-recursive and recursive visitation. The first invocation always takes an arbitrary amount of *base cases*. If *recursive cases* are provided to the second invocation, then a third invocation with *visitables* is expected. Unless explicitly provided, **the return type is deduced from the base cases.**
+
+    The *base cases* must have arity `N`, the *recursive cases* must have arity `N + 1`. `N` is the number of *visitables* that will be provided.
+
+* `scelta::recursive::match</* return type */>(/* recursive cases */)(/* visitables */)`
+
+    This version always requires an explicit return type and an arbitrary amount of *recursive cases* with arity `N + 1`, where `N` is the number of *visitables* that will be provided.
 
 ```cpp
 int_tree t0{/*...*/};
+
+scelta::match(
+    // Base case.
+    [](int x){ cout << x; }
+)(
+    // Recursive case.
+    [](auto recurse, int_tree_vector v){ for(auto x : v) recurse(v); }
+)(t0);
+
+// ... or ...
 
 scelta::recursive::match<return_type>(
     // Base case.
@@ -191,7 +211,7 @@ All tests currently pass on `Arch Linux x64` with:
 
 * `g++ (GCC) 8.0.0 20170514 (experimental)`
 
-* `clang version 5.0.0 (trunk 303617)`
+* ~~`clang version 5.0.0 (trunk 303617)`~~
 
 ### Integration with existing project
 
@@ -215,7 +235,7 @@ All tests currently pass on `Arch Linux x64` with:
 
 ## Documentation
 
-### `scelta::visit`
+### `scelta::nonrecursive::visit`
 
 Executes non-recursive visitation.
 
@@ -242,7 +262,7 @@ Executes non-recursive visitation.
 
     variant<int, char> v0{'a'};
     assert(
-        scelta::visit(visitor{}, v0) == 1
+        scelta::nonrecursive::visit(visitor{}, v0) == 1
     );
     ```
 
@@ -255,13 +275,13 @@ Executes non-recursive visitation.
 
     optional<int> o0{0};
     assert(
-        scelta::visit(visitor{}, o0) == 0
+        scelta::nonrecursive::visit(visitor{}, o0) == 0
     );
     ```
 
 
 
-### `scelta::match`
+### `scelta::nonrecursive::match`
 
 Executes non-recursive in-place visitation.
 
@@ -276,7 +296,7 @@ Executes non-recursive in-place visitation.
             noexcept(/*deduced*/)
             -> /*deduced*/
         {
-            // ... perform visitation with `scelta::visit` ...
+            // ... perform visitation with `scelta::nonrecursive::visit` ...
         };
     };
     ```
@@ -292,16 +312,16 @@ Executes non-recursive in-place visitation.
     ```cpp
     variant<int, char> v0{'a'};
     assert(
-        scelta::match([](int) { return 0; }
-                      [](char){ return 1; })(v0) == 1
+        scelta::nonrecursive::match([](int) { return 0; }
+                                    [](char){ return 1; })(v0) == 1
     );
     ```
 
     ```cpp
     optional<int> o0{0};
     assert(
-        scelta::match([](int)              { return 0; }
-                      [](scelta::nullopt_t){ return 1; })(o0) == 1
+        scelta::nonrecursive::match([](int)              { return 0; }
+                                    [](scelta::nullopt_t){ return 1; })(o0) == 1
     );
     ```
 
@@ -359,7 +379,7 @@ Executes recursive visitation.
         noexcept(false);
     ```
 
-    * Similar to `scelta::match`, but requires an explicit return type and is not `noexcept`-friendly.
+    * Similar to `scelta::nonrecursive::visit`, but requires an explicit return type and is not `noexcept`-friendly.
 
     * The `operator()` overloads of `visitor...` must take one extra generic argument to receive the `recurse` helper.
 
@@ -402,7 +422,7 @@ Executes recursive visitation.
     };
     ```
 
-    * Similar to `scelta::visit`, but requires an explicit return type and is not `noexcept`-friendly.
+    * Similar to `scelta::nonrecursive::match`, but requires an explicit return type and is not `noexcept`-friendly.
 
     * The passed `functionObjects...` must take one extra generic argument to receive the `recurse` helper.
 
@@ -422,9 +442,7 @@ Executes recursive visitation.
     )(v0);
     ```
 
-### `scelta::experimental::match`
-
-**(work-in-progress)**
+### `scelta::match`
 
 Executes visitation *(both non-recursive and recursive)*. Attempts to deduce the return type from the base cases, optionally supports user-provided explicit return type.
 
@@ -438,20 +456,20 @@ Executes visitation *(both non-recursive and recursive)*. Attempts to deduce the
         {
             if constexpr(are_visitables<decltype(xs)...>())
             {
-                // ... perform visitation with `scelta::visit` ...
+                // ... perform visitation with `scelta::nonrecursive::visit` ...
             }
             else
             {
                 return [o = overload(bco, xs...)](auto&&... visitables)
                 {
-                    // ... perform visitation with `scelta::recursive_visit` ...
+                    // ... perform visitation with `scelta::recursive::visit` ...
                 };
             }
         };
     };
     ```
 
-    * The first invocation of `scelta::experimental::match` takes one or more *base cases*. A base case is a function object with the same arity as the number of objects that will be visited.
+    * The first invocation of `scelta::match` takes one or more *base cases*. A base case is a function object with the same arity as the number of objects that will be visited.
 
     * The function returned by the first invocation takes either a number of *recursive cases* or a number of *visitables*.
 
@@ -466,8 +484,8 @@ Executes visitation *(both non-recursive and recursive)*. Attempts to deduce the
     ```cpp
     variant<int, char> v0{'a'};
     assert(
-        scelta::experimental::match([](int) { return 0; }
-                                    [](char){ return 1; })(v0) == 1
+        scelta::match([](int) { return 0; }
+                      [](char){ return 1; })(v0) == 1
     );
     ```
 
@@ -479,7 +497,7 @@ Executes visitation *(both non-recursive and recursive)*. Attempts to deduce the
     using rvec = scelta::recursive::resolve<b, std::vector<_>>;
 
     recursive_adt v0{rvec{recursive_adt{0}, recursive_adt{1}}};
-    scelta::experimental::match(
+    scelta::match(
         [](int x){ /* base case */ }
     )(
         [](auto recurse, rvec& v){ for(auto& x : v) recurse(x); }
@@ -489,3 +507,7 @@ Executes visitation *(both non-recursive and recursive)*. Attempts to deduce the
 ## Resources
 
 * ACCU 2017 talk: [**"Implementing variant Visitation Using Lambdas"**](https://www.youtube.com/watch?v=mqei4JJRQ7s)
+
+* C++Now 2017 talk: [**"Implementing `variant` visitation using lambdas"**](https://www.youtube.com/watch?v=3KyW5Ve3LtI)
+
+* C++::London *(May 2017)*  talk: [**"Implementing `variant` visitation using lambdas"**](https://skillsmatter.com/skillscasts/10172-implementing-variant-visitation-using-lambdas)

@@ -1,6 +1,6 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
-#include <scelta/match.hpp>
+#include <scelta/nonrecursive/match.hpp>
 
 TEST_MAIN()
 {
@@ -13,7 +13,7 @@ TEST_MAIN()
         {
             {
                 auto v = make(1);
-                scelta::match(                          //
+                scelta::nonrecursive::match(                          //
                     [](int x) { EXPECT_OP(x, ==, 1); }, //
                     [](float) { EXPECT(false); },       //
                     [](char)  { EXPECT(false); })(v);
@@ -21,7 +21,7 @@ TEST_MAIN()
 
             {
                 auto v = make(2.f);
-                scelta::match(                              //
+                scelta::nonrecursive::match(                              //
                     [](int)     { EXPECT(false); },         //
                     [](float x) { EXPECT_OP(x, ==, 2.f); }, //
                     [](char)    { EXPECT(false); })(v);
@@ -29,7 +29,7 @@ TEST_MAIN()
 
             {
                 auto v = make('c');
-                scelta::match(                     //
+                scelta::nonrecursive::match(                     //
                     [](int)    { EXPECT(false); }, //
                     [](float)  { EXPECT(false); }, //
                     [](char x) { EXPECT_OP(x, ==, 'c'); })(v);
@@ -42,7 +42,7 @@ TEST_MAIN()
 
                 auto v = make(1);
                 EXPECT_EQ(&a,                            //
-                    &scelta::match(                      //
+                    &scelta::nonrecursive::match(                      //
                         [&](int)  -> int& { return a; }, //
                         [&](auto) -> int& { return b; })(v));
             }

@@ -10,7 +10,7 @@
 #include "../utils/fwd.hpp"
 #include "../utils/returns.hpp"
 #include "../utils/overload.hpp"
-#include "../visitation/visit.hpp"
+#include "../nonrecursive/visit.hpp"
 #include "./visit.hpp"
 #include "./match.hpp"
 #include "../traits.hpp"
@@ -18,7 +18,7 @@
 #include <experimental/type_traits>
 #include <type_traits>
 
-namespace scelta::experimental::recursive
+namespace scelta
 {
     namespace impl
     {
@@ -166,7 +166,7 @@ namespace scelta::experimental::recursive
                 }
                 else
                 {
-                    return ::scelta::visit(static_cast<BaseCaseOverload&>(*this), FWD(rcs)...);
+                    return ::scelta::nonrecursive::visit(static_cast<BaseCaseOverload&>(*this), FWD(rcs)...);
                 }
             }
         };

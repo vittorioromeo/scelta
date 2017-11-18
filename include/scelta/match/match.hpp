@@ -12,13 +12,13 @@
 #include "../utils/fwd.hpp"
 #include "../utils/overload.hpp"
 #include "../utils/returns.hpp"
-#include "../visitation/visit.hpp"
-#include "./match.hpp"
-#include "./original_type.hpp"
-#include "./visit.hpp"
+#include "../nonrecursive/visit.hpp"
+#include "../recursive/match.hpp"
+#include "../recursive/original_type.hpp"
+#include "../recursive/visit.hpp"
 #include <type_traits>
 
-namespace scelta::experimental::recursive
+namespace scelta
 {
     namespace impl
     {
@@ -112,9 +112,10 @@ namespace scelta::experimental::recursive
 
         private:
             template <typename... Xs>
-            constexpr decltype(auto) do_non_recursive(Xs&&... xs)
+            constexpr auto do_non_recursive(Xs&&... xs) SCELTA_NOEXCEPT_AND_TRT(
+                ::scelta::nonrecursive::visit(std::declval<BCO&>(), FWD(xs)...))
             {
-                return ::scelta::visit(static_cast<BCO&>(*this), FWD(xs)...);
+                return ::scelta::nonrecursive::visit(static_cast<BCO&>(*this), FWD(xs)...);
             }
 
             template <typename... Xs>
@@ -182,5 +183,3 @@ namespace scelta::experimental::recursive
         )
     // clang-format on
 }
-
-// TODO: complete

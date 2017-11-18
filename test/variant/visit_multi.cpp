@@ -1,6 +1,6 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
-#include <scelta/visitation.hpp>
+#include <scelta/nonrecursive/visit.hpp>
 
 struct a
 {
@@ -13,7 +13,7 @@ struct b
     {                                              \
         auto v0 = make(t0{});                      \
         auto v1 = make(t1{});                      \
-        EXPECT_EQ(scelta::visit(f, v0, v1), expc); \
+        EXPECT_EQ(scelta::nonrecursive::visit(f, v0, v1), expc); \
     }
 
 TEST_MAIN()

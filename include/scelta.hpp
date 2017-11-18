@@ -7,6 +7,7 @@
 #include "./scelta/meta.hpp"
 #include "./scelta/utils.hpp"
 #include "./scelta/recursive.hpp"
+#include "./scelta/nonrecursive.hpp"
+#include "./scelta/match.hpp"
 #include "./scelta/support.hpp"
 #include "./scelta/traits.hpp"
-#include "./scelta/visitation.hpp"

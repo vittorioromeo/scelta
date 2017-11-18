@@ -1,6 +1,6 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
-#include <scelta/match.hpp>
+#include <scelta/nonrecursive/match.hpp>
 
 struct a
 {
@@ -25,10 +25,10 @@ TEST_MAIN()
         [](auto make)                 //
         {
             {
-                auto f = scelta::match(     //
-                    [](a, a) { return 0; }, //
-                    [](a, b) { return 1; }, //
-                    [](b, b) { return 2; }, //
+                auto f = scelta::nonrecursive::match( //
+                    [](a, a) { return 0; },           //
+                    [](a, b) { return 1; },           //
+                    [](b, b) { return 2; },           //
                     [](b, a) { return 3; });
 
                 MAKE_AND_EXPECT(a, a, 0);

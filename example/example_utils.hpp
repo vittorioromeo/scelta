@@ -5,7 +5,7 @@
 #pragma once
 
 #include <scelta.hpp>
-#include <scelta/recursive/experimental_match.hpp>
+#include <scelta/match.hpp>
 
 namespace example
 {

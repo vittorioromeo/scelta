@@ -5,9 +5,9 @@
 #pragma once
 
 #include "../traits/adt/valid.hpp"
-#include "../utils/returns.hpp"
 #include "../utils/assert.hpp"
 #include "../utils/homogenizer.hpp"
+#include "../utils/returns.hpp"
 
 namespace scelta
 {
@@ -36,7 +36,10 @@ namespace scelta
     }
     // clang-format on
 
-    template <typename... Ts>
-    constexpr auto visit(Ts&&... xs)
-        SCELTA_RETURNS(impl::visit_impl(impl::non_recursive_tag{}, FWD(xs)...))
+    namespace nonrecursive
+    {
+        template <typename... Ts>
+        constexpr auto visit(Ts&&... xs) SCELTA_RETURNS(
+            impl::visit_impl(impl::non_recursive_tag{}, FWD(xs)...))
+    }
 }

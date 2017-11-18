@@ -7,12 +7,12 @@
 #include "../variant_test_utils.hpp"
 #include <memory>
 #include <scelta/recursive.hpp>
-#include <scelta/recursive/experimental_match.hpp>
+#include <scelta/match.hpp>
 #include <scelta/support.hpp>
 #include <vector>
 
 namespace sr = scelta::recursive;
-namespace ser = scelta::experimental::recursive;
+namespace ser = scelta;
 using _ = sr::placeholder;
 
 struct f

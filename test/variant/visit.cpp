@@ -1,6 +1,6 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
-#include <scelta/visitation.hpp>
+#include <scelta/nonrecursive/visit.hpp>
 
 TEST_MAIN()
 {
@@ -17,7 +17,7 @@ TEST_MAIN()
                     [](char) { EXPECT(false); });
 
                 auto v = make(1);
-                scelta::visit(f, v);
+                scelta::nonrecursive::visit(f, v);
             }
 
             {
@@ -27,7 +27,7 @@ TEST_MAIN()
                     [](char) { EXPECT(false); });
 
                 auto v = make(2.f);
-                scelta::visit(f, v);
+                scelta::nonrecursive::visit(f, v);
             }
 
             {
@@ -37,7 +37,7 @@ TEST_MAIN()
                     [](char x) { EXPECT_OP(x, ==, 'c'); });
 
                 auto v = make('c');
-                scelta::visit(f, v);
+                scelta::nonrecursive::visit(f, v);
             }
 
             {
@@ -48,10 +48,10 @@ TEST_MAIN()
                     [&](auto) -> int& { return b; });
 
                 auto v0 = make(1);
-                EXPECT_EQ(&scelta::visit(f, v0), &a);
+                EXPECT_EQ(&scelta::nonrecursive::visit(f, v0), &a);
 
                 auto v1 = make('a');
-                EXPECT_EQ(&scelta::visit(f, v1), &b);
+                EXPECT_EQ(&scelta::nonrecursive::visit(f, v1), &b);
             }
         });
 }
