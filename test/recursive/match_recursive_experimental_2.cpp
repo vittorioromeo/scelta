@@ -7,12 +7,12 @@
 #include "../variant_test_utils.hpp"
 #include <memory>
 #include <scelta/recursive.hpp>
-#include <scelta/recursive/experimental_match.hpp>
+#include <scelta/match.hpp>
 #include <scelta/support.hpp>
 #include <vector>
 
 namespace sr = scelta::recursive;
-namespace ser = scelta::experimental::recursive;
+namespace ser = scelta;
 using _ = sr::placeholder;
 
 struct f
@@ -60,6 +60,21 @@ struct test_case
 
             EXPECT_EQ(m(v0), 0);
             EXPECT_EQ(m(v1), 1);
+        }
+
+        // concrete multiple base cases, no recursive cases, return reference
+        {
+            int a = 0;
+            int b = 0;
+
+            Variant<int, char> v0{0};
+            Variant<int, char> v1{'a'};
+
+            auto m = ser::match([&](int)  -> int& { return a; },
+                                [&](char) -> int& { return b; });
+
+            EXPECT_EQ(&m(v0), &a);
+            EXPECT_EQ(&m(v1), &b);
         }
 
         // auto single base case, no recursive cases

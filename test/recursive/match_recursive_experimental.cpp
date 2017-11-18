@@ -6,12 +6,12 @@
 #include "../variant_test_utils.hpp"
 #include <memory>
 #include <scelta/recursive.hpp>
-#include <scelta/recursive/experimental_match.hpp>
+#include <scelta/match.hpp>
 #include <scelta/support.hpp>
 #include <vector>
 
 namespace sr = scelta::recursive;
-namespace ser = scelta::experimental::recursive;
+namespace ser = scelta;
 using _ = sr::placeholder;
 
 template <template <typename...> typename Variant>
@@ -69,13 +69,6 @@ struct test_case
                        [&](auto recurse, const auto& v) { for(const auto& x : v) recurse(x); })(v);
 
             EXPECT_EQ(acc, 6);
-
-/* TODO: ?
-            ser::match([&](auto x) { acc += x; })(
-                       [&](auto recurse, const r0& v) { for(const auto& x : v) recurse(x); })(v);
-
-            EXPECT_EQ(acc, 8);
-*/
         }
 
         {

@@ -7,14 +7,15 @@
 #include "./copy_cv_ptr_ref.hpp"
 #include <type_traits>
 
-// Usage of C++17: nested `namespace`.
 namespace scelta::meta
 {
     namespace impl
     {
+        /// @brief Matches types exactly equivalent to `T`.
         template <typename T>
         using identity_check = T;
 
+        /// @brief Replaces types with exactly `T`.
         template <typename, typename T>
         using identity_replace = T;
 

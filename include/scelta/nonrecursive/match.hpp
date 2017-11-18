@@ -26,9 +26,9 @@ namespace scelta
     template <typename... Variants>                                        \
     constexpr auto operator()(Variants&&... variants) m_refq               \
     SCELTA_NOEXCEPT_AND_TRT(                                               \
-        ::scelta::visit(std::declval<Visitor m_refq>(), FWD(variants)...)) \
+        ::scelta::nonrecursive::visit(std::declval<Visitor m_refq>(), FWD(variants)...)) \
     {                                                                      \
-        return ::scelta::visit(                                            \
+        return ::scelta::nonrecursive::visit(                                            \
             static_cast<Visitor m_refq>(*this), FWD(variants)...);         \
     }
 
@@ -47,11 +47,14 @@ namespace scelta
         // clang-format on
     }
 
-    // clang-format off
-    template <typename... Fs>
-    constexpr auto match(Fs&&... fs)
-        SCELTA_RETURNS(
-            impl::make_bound_visitor(::scelta::overload(FWD(fs)...))
-        )
-    // clang-format on
+    namespace nonrecursive
+    {
+        // clang-format off
+        template <typename... Fs>
+        constexpr auto match(Fs&&... fs)
+            SCELTA_RETURNS(
+                impl::make_bound_visitor(::scelta::overload(FWD(fs)...))
+            )
+        // clang-format on
+    }
 }

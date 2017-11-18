@@ -1,7 +1,7 @@
 #include "../test_utils.hpp"
 #include "../variant_test_utils.hpp"
 #include <scelta/traits/adt/alternatives.hpp>
-#include <scelta/match.hpp>
+#include <scelta/nonrecursive/match.hpp>
 
 TEST_MAIN()
 {
@@ -18,7 +18,7 @@ TEST_MAIN()
                 int>);
 
             {
-                auto f = scelta::match(     //
+                auto f = scelta::nonrecursive::match(     //
                     [](null) { return 0; }, //
                     [](int)  { return 1; });
 
@@ -27,7 +27,7 @@ TEST_MAIN()
             }
 
             {
-                auto f = scelta::match(           //
+                auto f = scelta::nonrecursive::match(           //
                     [](null, null) { return 0; }, //
                     [](null, int)  { return 1; }, //
                     [](int,  null) { return 2; }, //

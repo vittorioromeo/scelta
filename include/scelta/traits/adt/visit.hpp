@@ -8,7 +8,6 @@
 #include "../../utils/optional_utils.hpp"
 #include "../dispatch.hpp"
 
-// Usage of C++17: nested `namespace`.
 namespace scelta::traits::adt
 {
     namespace impl

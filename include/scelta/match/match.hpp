@@ -7,25 +7,51 @@
 #include "../meta/forward_like.hpp"
 #include "../meta/replace_all.hpp"
 #include "../meta/y_combinator.hpp"
-#include "../utils/fwd.hpp"
-#include "../utils/returns.hpp"
-#include "../utils/overload.hpp"
-#include "../visitation/visit.hpp"
-#include "./visit.hpp"
-#include "./match.hpp"
-#include "./original_type.hpp"
-#include "../traits/adt/is_visitable.hpp"
 #include "../traits/adt/alternatives.hpp"
+#include "../traits/adt/is_visitable.hpp"
+#include "../utils/fwd.hpp"
+#include "../utils/overload.hpp"
+#include "../utils/returns.hpp"
+#include "../nonrecursive/visit.hpp"
+#include "../recursive/match.hpp"
+#include "../recursive/original_type.hpp"
+#include "../recursive/visit.hpp"
 #include <type_traits>
 
-namespace scelta::experimental::recursive
+namespace scelta
 {
     namespace impl
     {
         // Tag type that when passed to `match` attempts to deduce the return
         // type by invoking the base case overload set with the first
         // alternative of the visitable.
-        struct deduce_rt { };
+        struct deduce_rt
+        {
+        };
+
+        // SFINAE-friendly return type dispatch.
+        // Not-deduced case: evaluate to `Return`.
+        template <typename Return>
+        struct return_type
+        {
+            template <typename...>
+            using apply = Return;
+        };
+
+        // SFINAE-friendly return type dispatch.
+        // Deduced case: evaluate to result of `F(Ts...)`.
+        template <>
+        struct return_type<deduce_rt>
+        {
+            template <typename F, typename... Ts>
+            using apply = std::result_of_t<F(Ts...)>;
+        };
+
+        // SFINAE-friendly return type dispatch.
+        // Alias for `return_type<Return>::apply<F, Ts...>`.
+        template <typename Return, typename F, typename... Ts>
+        using applied_return_type =
+            typename return_type<Return>::template apply<F, Ts...>;
 
         template <typename T>
         using original_decay_t =
@@ -39,8 +65,7 @@ namespace scelta::experimental::recursive
         struct unresolved_visitor : O
         {
             template <typename OFwd>
-            constexpr unresolved_visitor(OFwd&& o) noexcept(
-                noexcept(O{FWD(o)}))
+            constexpr unresolved_visitor(OFwd&& o) noexcept(noexcept(O{FWD(o)}))
                 : O{FWD(o)}
             {
             }
@@ -53,10 +78,8 @@ namespace scelta::experimental::recursive
                     // Recurse on this lambda via Y combinator to pass it back
                     // as part of the bound `recurse` argument.
                     [this](auto self, auto&&... xs) mutable->Return {
-                        // TODO: does `this` live long enough?
                         // Invoke the overload...
                         return static_cast<O&>(*this)(
-
                             // Passing a visitor that invokes `self` to the
                             // `recurse` argument.
                             [&self](auto&&... vs) -> Return {
@@ -73,13 +96,12 @@ namespace scelta::experimental::recursive
 
         template <typename BCO>
         constexpr auto make_unresolved_visitor(BCO&& bco)
-            SCELTA_RETURNS(
-                unresolved_visitor<std::decay_t<BCO>>{FWD(bco)}
-            )
+            SCELTA_RETURNS(unresolved_visitor<std::decay_t<BCO>>{FWD(bco)})
 
 
-        template <typename Return, typename BCO>
-        struct with_bound_base_cases : private BCO // "base case overload", EBO
+                template <typename Return, typename BCO>
+                struct with_bound_base_cases
+            : private BCO // "base case overload", EBO
         {
             template <typename BCOFwd>
             constexpr with_bound_base_cases(BCOFwd&& bco) noexcept(
@@ -88,40 +110,52 @@ namespace scelta::experimental::recursive
             {
             }
 
+        private:
             template <typename... Xs>
-            constexpr auto operator()(Xs&&... xs)
+            constexpr auto do_non_recursive(Xs&&... xs) SCELTA_NOEXCEPT_AND_TRT(
+                ::scelta::nonrecursive::visit(std::declval<BCO&>(), FWD(xs)...))
             {
-                constexpr bool has_recursive_cases = !(::scelta::traits::adt::is_visitable_v<Xs&&> && ...);
+                return ::scelta::nonrecursive::visit(static_cast<BCO&>(*this), FWD(xs)...);
+            }
+
+            template <typename... Xs>
+            constexpr auto defer_recursive(Xs&&... xs)
+            {
+                // "Base case overload" with one extra argument (+1 arity).
+                auto adapted_bco = [bco = static_cast<BCO&&>(*this)] //
+                    (auto, auto&&... ys) mutable                     //
+                    SCELTA_NOEXCEPT_AND_TRT(std::declval<BCO&&>()(FWD(ys)...)) {
+                        return bco(FWD(ys)...);
+                    };
+
+                // Overload of "adapted BCO" and "recursive cases".
+                auto o = overload(std::move(adapted_bco), FWD(xs)...);
+
+                return [urv = make_unresolved_visitor(std::move(o))](
+                           auto&&... vs) mutable -> decltype(auto) {
+                    using rt = applied_return_type<Return, BCO&,
+                        original_decay_first_alternative_t<decltype(vs)>...>;
+
+                    auto resolved_vis = urv.template resolve<rt>();
+                    return ::scelta::recursive::visit<rt>(
+                        resolved_vis, FWD(vs)...);
+                };
+            }
+
+        public:
+            template <typename... Xs>
+            constexpr decltype(auto) operator()(Xs&&... xs)
+            {
+                constexpr bool has_recursive_cases =
+                    !(::scelta::traits::adt::is_visitable_v<Xs&&> && ...);
 
                 if constexpr(has_recursive_cases)
                 {
-                    // base case overload with one extra argument (+1 arity)
-                    auto adapted_bco = [bco = static_cast<BCO&&>(*this)]
-                        (auto, auto&&... xs) mutable SCELTA_NOEXCEPT_AND_TRT(std::declval<BCO&&>()(FWD(xs)...)) {
-                            return bco(FWD(xs)...);
-                        };
-
-                    auto o = overload(std::move(adapted_bco), FWD(xs)...);
-                    return [rv = make_unresolved_visitor(std::move(o))](auto&&... vs) mutable
-                    {
-                        // TODO: SFINAE out the conditional because result_of might create instantiation error
-                        using rt = std::conditional_t<
-                            std::is_same_v<Return, deduce_rt>,
-
-                            // result of calling BCO& (unadapted overload) with the first alternative of each variant
-                            std::result_of_t<BCO&(original_decay_first_alternative_t<decltype(vs)>...)>,
-
-                            // user-specified return type
-                            Return
-                        >;
-
-                        auto resolved_vis = rv.template resolve<rt>();
-                        return ::scelta::recursive::visit<rt>(resolved_vis, FWD(vs)...);
-                    };
+                    return defer_recursive(FWD(xs)...);
                 }
                 else
                 {
-                    return ::scelta::visit(static_cast<BCO&>(*this), FWD(xs)...);
+                    return do_non_recursive(FWD(xs)...);
                 }
             }
         };
@@ -149,5 +183,3 @@ namespace scelta::experimental::recursive
         )
     // clang-format on
 }
-
-// TODO: complete

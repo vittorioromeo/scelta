@@ -6,7 +6,6 @@
 #ifndef SCELTA_SUPPORT_OPTIONAL_BOOST_DISABLE
 
 // clang-format off
-// Usage of C++17: `__has_include`.
 #if __has_include(<boost/optional.hpp>) && __has_include(<boost/none.hpp>)
 // clang-format on
 

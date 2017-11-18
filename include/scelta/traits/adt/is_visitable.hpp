@@ -7,8 +7,6 @@
 #include "./visit.hpp"
 #include <experimental/type_traits>
 
-
-// Usage of C++17: nested `namespace`.
 namespace scelta::traits::adt
 {
     namespace impl

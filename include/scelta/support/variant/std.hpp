@@ -6,11 +6,9 @@
 #ifndef SCELTA_SUPPORT_VARIANT_STD_DISABLE
 
 // clang-format off
-// Usage of C++17: `__has_include`.
 #if __has_include(<variant>)
 // clang-format on
 
-// Usage of C++17: `<variant>`.
 #include "../../traits/adt/visit.hpp"
 #include "../../traits/adt/valid.hpp"
 #include "../../utils/returns.hpp"
