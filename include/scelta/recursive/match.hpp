@@ -6,7 +6,6 @@
 
 #include "../meta/y_combinator.hpp"
 #include "../utils/fwd.hpp"
-#include "../nonrecursive/visit.hpp"
 #include "../recursive/visit.hpp"
 #include "./visit.hpp"
 

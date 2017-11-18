@@ -16,16 +16,16 @@
 [badge.license]: http://img.shields.io/badge/license-mit-blue.svg?style=flat-square
 [badge.gratipay]: https://img.shields.io/gratipay/user/SuperV1234.svg?style=flat-square
 [badge.conan]: https://img.shields.io/badge/conan.io-scelta%2F0.1-yellowgreen.svg?style=flat-square
-[badge.wandbox]: https://img.shields.io/badge/on-wandbox-376666.svg?style=flat-square
-[badge.godbolt]: https://img.shields.io/badge/on-godbolt-376666.svg?style=flat-square
+[badge.on-wandbox]: https://img.shields.io/badge/on-wandbox-376666.svg?style=flat-square
+[badge.on-godbolt]: https://img.shields.io/badge/on-godbolt-376666.svg?style=flat-square
 
 [build]: https://travis-ci.org/SuperV1234/scelta
 [stability]: http://github.com/badges/stability-badges
 [license]: https://github.com/SuperV1234/scelta/blob/master/LICENSE
 [gratipay]: https://gratipay.com/~SuperV1234/
 [conan]: https://www.conan.io/source/scelta/0.1/SuperV1234/experimental
-[wandbox]: https://wandbox.org/permlink/wSA55OCJz17k7Jtz
-[godbolt]: https://godbolt.org/g/4sQtkM
+[on-wandbox]: https://wandbox.org/permlink/wSA55OCJz17k7Jtz
+[on-godbolt]: https://godbolt.org/g/4sQtkM
 
 
 
