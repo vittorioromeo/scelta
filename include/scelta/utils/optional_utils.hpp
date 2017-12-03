@@ -119,4 +119,6 @@ namespace scelta
         is_nullopt(o) ? nullopt : FWD(ob)
     )
     // clang-format on
+
+    // TODO: or_else
 }
