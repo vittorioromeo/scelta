@@ -72,3 +72,51 @@ namespace scelta::impl
     }
     // clang-format on
 }
+
+namespace scelta
+{
+    // TODO: test, docs
+    template <typename Optional>
+    constexpr bool is_nullopt(const Optional& o) noexcept
+    {
+        return !static_cast<bool>(o);
+    }
+
+    // clang-format off
+    // TODO: test, docs
+    template <typename Optional, typename FD, typename F>
+    constexpr auto map_or_else(Optional&& o, FD&& f_def, F&& f) SCELTA_RETURNS(
+        std::decay_t<Optional>{
+            is_nullopt(o) ? FWD(f_def)()
+                          : FWD(f)(impl::access_optional(FWD(o)))
+        }
+    )
+
+    // TODO: test, docs
+    template <typename Optional, typename T, typename F>
+    constexpr auto map_or(Optional&& o, T&& def, F&& f) SCELTA_RETURNS(
+        std::decay_t<Optional>{
+            is_nullopt(o) ? FWD(def)
+                          : FWD(f)(impl::access_optional(FWD(o)))
+        }
+    )
+
+    // TODO: test, docs
+    template <typename Optional, typename F>
+    constexpr auto map(Optional&& o, F&& f) SCELTA_RETURNS(
+        map_or(FWD(o), nullopt, FWD(f))
+    )
+
+    // TODO: test, docs
+    template <typename Optional, typename F>
+    constexpr auto and_then(Optional&& o, F&& f) SCELTA_RETURNS(
+        is_nullopt(o) ? nullopt : FWD(f)(impl::access_optional(FWD(o)))
+    )
+
+    // TODO: test, docs
+    template <typename Optional, typename OptB>
+    constexpr auto and_(Optional&& o, OptB&& ob) SCELTA_RETURNS(
+        is_nullopt(o) ? nullopt : FWD(ob)
+    )
+    // clang-format on
+}
