@@ -37,6 +37,8 @@ namespace example
         ::boost::optional
 #elif defined(SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE)
         ::type_safe::optional
+#elif defined(SCELTA_SUPPORT_OPTIONAL_TL)
+        ::tl::optional
 #else
 #error "No optional type available."
 #endif
