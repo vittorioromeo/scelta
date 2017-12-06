@@ -94,6 +94,10 @@ namespace test
 #if defined(SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE)
         f(TestCase<type_safe::optional>{});
 #endif
+
+#if defined(SCELTA_SUPPORT_OPTIONAL_TL)
+        f(TestCase<tl::optional>{});
+#endif
     }
 
     template <typename TAlternatives, typename TF>
