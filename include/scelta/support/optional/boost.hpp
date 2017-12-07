@@ -9,20 +9,9 @@
 #if __has_include(<boost/optional.hpp>) && __has_include(<boost/none.hpp>)
 // clang-format on
 
-#include "../../utils/optional_utils.hpp"
-#include "../../traits/adt/visit.hpp"
 #include <boost/optional.hpp>
 #include <boost/none.hpp>
-
-#define SCELTA_SUPPORT_OPTIONAL_BOOST 1
-
-namespace scelta::traits::adt
-{
-    template <typename T>
-    struct visit<::boost::optional<T>> : impl::visit_optional_t
-    {
-    };
-}
+#include "./enable/boost.hpp"
 
 #endif
 #endif

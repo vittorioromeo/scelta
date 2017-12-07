@@ -9,26 +9,8 @@
 #if __has_include(<boost/variant.hpp>)
 // clang-format on
 
-#include "../../traits/adt/visit.hpp"
-#include "../../utils/returns.hpp"
 #include <boost/variant.hpp>
-
-#define SCELTA_SUPPORT_VARIANT_BOOST 1
-
-namespace scelta::traits::adt
-{
-    template <typename... Alts>
-    struct visit<::boost::variant<Alts...>>
-    {
-        // clang-format off
-        template <typename Tag, typename... Ts>
-        constexpr auto operator()(Tag, Ts&&... xs)
-            SCELTA_RETURNS(
-                ::boost::apply_visitor(FWD(xs)...)
-            )
-        // clang-format on
-    };
-}
+#include "./enable/boost.hpp"
 
 #endif
 #endif

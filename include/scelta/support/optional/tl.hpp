@@ -9,19 +9,8 @@
 #if __has_include(<tl/optional.hpp>)
 // clang-format on
 
-#include "../../utils/optional_utils.hpp"
-#include "../../traits/adt/visit.hpp"
 #include <tl/optional.hpp>
-
-#define SCELTA_SUPPORT_OPTIONAL_TL 1
-
-namespace scelta::traits::adt
-{
-    template <typename T>
-    struct visit<::tl::optional<T>> : impl::visit_optional_t
-    {
-    };
-}
+#include "./enable/tl.hpp"
 
 #endif
 #endif
