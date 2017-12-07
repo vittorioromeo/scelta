@@ -66,14 +66,14 @@ However, there are some problems with them:
 `scelta` detects and works out-of-the-box with:
 
 * [`std::variant`](http://en.cppreference.com/w/cpp/utility/variant)
-* [`boost::variant`](http://www.boost.org/doc/libs/1_64_0/doc/html/variant.html)
+* [`boost::variant`](http://www.boost.org/doc/libs/release/doc/html/variant.html)
 * [`mpark::variant`](https://github.com/mpark/variant)
 * [`eggs::variant`](https://github.com/eggs-cpp/variant)
 * [`type_safe::variant`](https://github.com/foonathan/type_safe)
 * [`std::optional`](http://en.cppreference.com/w/cpp/utility/optional)
-* [`boost::optional`](http://www.boost.org/doc/libs/1_64_0/libs/optional/doc/html/index.html)
+* [`boost::optional`](http://www.boost.org/doc/libs/release/libs/optional/doc/html/index.html)
 * [`type_safe::optional`](https://github.com/foonathan/type_safe)
-
+* [`tl::optional`](https://github.com/TartanLlama/optional)
 
 Other implementation can be easily adapted by providing specializations of the helper `traits` structs. PRs are welcome!
 
