@@ -9,6 +9,7 @@
 
 #include "../../../traits/adt/alternatives.hpp"
 #include "../../../traits/adt/visit.hpp"
+#include "../../../traits/adt/visit_optional.hpp"
 #include "../../../traits/optional.hpp"
 #include "../../../utils/returns.hpp"
 

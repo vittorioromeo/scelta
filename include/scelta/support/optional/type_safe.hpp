@@ -9,8 +9,8 @@
 #if __has_include(<type_safe/optional.hpp>)
 // clang-format on
 
-#include "./enable/type_safe.hpp"
 #include <type_safe/optional.hpp>
+#include "./enable/type_safe.hpp"
 
 #endif
 #endif

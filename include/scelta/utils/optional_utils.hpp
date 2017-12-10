@@ -5,41 +5,28 @@
 #pragma once
 
 #include "../meta/forward_like.hpp"
+#include "../traits/adt/is_visitable.hpp"
 #include "../traits/adt/valid.hpp"
 #include "./access_optional.hpp"
 #include "./assert.hpp"
 #include "./returns.hpp"
-
-namespace scelta
-{
-    struct nullopt_t
-    {
-    };
-
-    inline constexpr nullopt_t nullopt{};
-}
+#include "./nullopt.hpp"
 
 namespace scelta::impl
 {
-    // clang-format off
-    template <typename... Ts>
-    constexpr auto to_nullopt(Ts&&...)
-        SCELTA_RETURNS(
-            ::scelta::nullopt
-        )
-
-    template <typename Visitor>
-    constexpr auto visit_optional(Visitor&& visitor)
-        SCELTA_RETURNS(
-            FWD(visitor)()
-        )
-
     // Invokes the continuation `c` with the result of `f(<"unpacked" o>)`.
     template <typename F, typename Continuation, typename Optional>
     constexpr auto call_with_optional(F&& f, Continuation&& c, Optional&& o)
         SCELTA_RETURNS(
             o ? FWD(c)(FWD(f)(meta::forward_like<Optional>(::scelta::impl::access_optional(o))))
-              : FWD(c)(FWD(f)(to_nullopt()))
+              : FWD(c)(FWD(f)(nullopt))
+        )
+
+    // clang-format off
+    template <typename Visitor>
+    constexpr auto visit_optional(Visitor&& visitor)
+        SCELTA_RETURNS(
+            FWD(visitor)()
         )
 
     // TODO: noexcept incorrect
@@ -71,54 +58,4 @@ namespace scelta::impl
         );
     }
     // clang-format on
-}
-
-namespace scelta
-{
-    // TODO: test, docs
-    template <typename Optional>
-    constexpr bool is_nullopt(const Optional& o) noexcept
-    {
-        return !static_cast<bool>(o);
-    }
-
-    // clang-format off
-    // TODO: test, docs
-    template <typename Optional, typename FD, typename F>
-    constexpr auto map_or_else(Optional&& o, FD&& f_def, F&& f) SCELTA_RETURNS(
-        std::decay_t<Optional>{
-            is_nullopt(o) ? FWD(f_def)()
-                          : FWD(f)(impl::access_optional(FWD(o)))
-        }
-    )
-
-    // TODO: test, docs
-    template <typename Optional, typename T, typename F>
-    constexpr auto map_or(Optional&& o, T&& def, F&& f) SCELTA_RETURNS(
-        std::decay_t<Optional>{
-            is_nullopt(o) ? FWD(def)
-                          : FWD(f)(impl::access_optional(FWD(o)))
-        }
-    )
-
-    // TODO: test, docs
-    template <typename Optional, typename F>
-    constexpr auto map(Optional&& o, F&& f) SCELTA_RETURNS(
-        map_or(FWD(o), nullopt, FWD(f))
-    )
-
-    // TODO: test, docs
-    template <typename Optional, typename F>
-    constexpr auto and_then(Optional&& o, F&& f) SCELTA_RETURNS(
-        is_nullopt(o) ? nullopt : FWD(f)(impl::access_optional(FWD(o)))
-    )
-
-    // TODO: test, docs
-    template <typename Optional, typename OptB>
-    constexpr auto and_(Optional&& o, OptB&& ob) SCELTA_RETURNS(
-        is_nullopt(o) ? nullopt : FWD(ob)
-    )
-    // clang-format on
-
-    // TODO: or_else
 }

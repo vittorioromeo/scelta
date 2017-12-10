@@ -7,8 +7,8 @@
 // This header assumes that `std::optional` was already properly included
 // beforehand.
 
-#include "../../../utils/optional_utils.hpp"
 #include "../../../traits/adt/visit.hpp"
+#include "../../../traits/adt/visit_optional.hpp"
 
 #define SCELTA_SUPPORT_OPTIONAL_STD 1
 
