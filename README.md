@@ -60,6 +60,8 @@ However, there are some problems with them:
 
 * Provides an intuitive **placeholder-based** recursive `variant` and `optional` type definition.
 
+* Provides monadic operations such as `map` and `and_then` for `optional` types, including infix syntax.
+
 
 ### Implementation independent
 
@@ -174,6 +176,30 @@ scelta::recursive::match<return_type>(
 )(t0);
 ```
 
+
+### Monadic `optional` operations
+
+`scelta` provides various monadic operations that work on any supported `optional` type. Here's an example inspired by Simon Brand's ["Functional exceptionless error-handling with optional and expected"](https://blog.tartanllama.xyz/optional-expected/) article:
+
+```cpp
+optional<image_view> crop_to_cat(image_view);
+optional<image_view> add_bow_tie(image_view);
+optional<image_view> make_eyes_sparkle(image_view);
+image_view make_smaller(image_view);
+image_view add_rainbow(image_view);
+
+optional<image_view> get_cute_cat(image_view img)
+{
+    using namespace scelta::infix;
+    return crop_to_cat(img)
+         | and_then(add_bow_tie)
+         | and_then(make_eyes_sparkle)
+         | map(make_smaller)
+         | map(add_rainbow);
+}
+```
+
+
 ## Installation/usage
 
 ### Quick start
@@ -205,6 +231,7 @@ make check # build and run tests
 
 make example_error_handling # error handling via pattern matching
 make example_expression     # recursive expression evaluation
+make example_optional_cat   # monadic optional operations
 ```
 
 All tests currently pass on `Arch Linux x64` with:
@@ -503,6 +530,47 @@ Executes visitation *(both non-recursive and recursive)*. Attempts to deduce the
         [](auto recurse, rvec& v){ for(auto& x : v) recurse(x); }
     )(v0);
     ```
+
+### Monadic `optional` operations
+
+`scelta` provides various monadic `optional` operations. They can be used in two different ways:
+
+```cpp
+optional<int> o{/* ... */};
+
+// Free function syntax:
+scelta::map(o, [](int x){ return x + 1; });
+
+// Infix syntax:
+o | scelta::infix::map([](int x){ return x + 1; });
+```
+
+These are the available operations:
+
+* `map_or_else(o, f_def, f)`
+    * Returns `f(*o)` if `o` is set, `f_def()` otherwise.
+
+* `map_or(o, def, f)`
+    * Returns `f(*o)` if `o` is set, `def` otherwise.
+
+* `map(o, f)`
+    * Returns `optional{f(*o)}` if `o` is set, an empty optional otherwise.
+
+* `and_then(o, f)`
+    * Returns `f(*o)` if `o` is set, an empty optional otherwise.
+
+* `and_(o, ob)`
+    * Returns `ob` if `o` is set, an empty `ob` otherwise.
+
+* `or_else(o, f)`
+    * Returns `o` if `o` is set, `f()` otherwise.
+
+* `or_(o, def)`
+    * Returns `o` if `o` is set, `def` otherwise.
+
+The example file `example/optional_cat.cpp` shows usage of `map` and `and_then` using `scelta::infix` syntax.
+
+
 
 ## Resources
 

@@ -4,4 +4,5 @@
 
 add_executable(example_error_handling "error_handling.cpp")
 add_executable(example_expression "expression.cpp")
+add_executable(example_optional_cat "optional_cat.cpp")
 

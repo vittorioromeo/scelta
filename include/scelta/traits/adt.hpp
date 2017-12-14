@@ -4,6 +4,8 @@
 
 #pragma once
 
-#include "./adt/visit.hpp"
-#include "./adt/valid.hpp"
 #include "./adt/alternatives.hpp"
+#include "./adt/is_visitable.hpp"
+#include "./adt/valid.hpp"
+#include "./adt/visit.hpp"
+#include "./adt/visit_optional.hpp"

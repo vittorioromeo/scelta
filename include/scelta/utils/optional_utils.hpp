@@ -5,41 +5,28 @@
 #pragma once
 
 #include "../meta/forward_like.hpp"
+#include "../traits/adt/is_visitable.hpp"
 #include "../traits/adt/valid.hpp"
 #include "./access_optional.hpp"
 #include "./assert.hpp"
 #include "./returns.hpp"
-
-namespace scelta
-{
-    struct nullopt_t
-    {
-    };
-
-    inline constexpr nullopt_t nullopt{};
-}
+#include "./nullopt.hpp"
 
 namespace scelta::impl
 {
-    // clang-format off
-    template <typename... Ts>
-    constexpr auto to_nullopt(Ts&&...)
-        SCELTA_RETURNS(
-            ::scelta::nullopt
-        )
-
-    template <typename Visitor>
-    constexpr auto visit_optional(Visitor&& visitor)
-        SCELTA_RETURNS(
-            FWD(visitor)()
-        )
-
     // Invokes the continuation `c` with the result of `f(<"unpacked" o>)`.
     template <typename F, typename Continuation, typename Optional>
     constexpr auto call_with_optional(F&& f, Continuation&& c, Optional&& o)
         SCELTA_RETURNS(
             o ? FWD(c)(FWD(f)(meta::forward_like<Optional>(::scelta::impl::access_optional(o))))
-              : FWD(c)(FWD(f)(to_nullopt()))
+              : FWD(c)(FWD(f)(nullopt))
+        )
+
+    // clang-format off
+    template <typename Visitor>
+    constexpr auto visit_optional(Visitor&& visitor)
+        SCELTA_RETURNS(
+            FWD(visitor)()
         )
 
     // TODO: noexcept incorrect
