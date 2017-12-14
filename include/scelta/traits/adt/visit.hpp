@@ -9,14 +9,6 @@
 
 namespace scelta::traits::adt
 {
-    // TODO:
-    /*template <typename T>
-    struct visit
-    {
-        static_assert(meta::always_false_v<T>,
-            "`scelta::traits::adt::visit` not specialized for `T`.");
-    };*/
-
     template <typename>
     struct visit;
 

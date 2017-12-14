@@ -11,11 +11,10 @@ namespace scelta
     struct nullopt_t
     {
         // TODO: limit to optional
-        template <typename T>//,
-            //typename = std::enable_if_t<>>>
+        template <typename T, typename = std::enable_if_t<
+                                  traits::adt::is_visitable_v<std::decay_t<T>>>>
         operator T() const
         {
-           // static_assert(traits::adt::is_visitable_v<std::decay_t<T>>);
             return {};
         }
     };
@@ -23,17 +22,24 @@ namespace scelta
     inline constexpr nullopt_t nullopt{};
 
     // clang-format off
-    // TODO: test, docs
+    /// @brief Always returns `nullopt`.
     template <typename... Ts>
     constexpr auto to_nullopt(Ts&&...)
         SCELTA_RETURNS(
             ::scelta::nullopt
         )
-    // clang-format on
 
+    /// @brief Returns `true` if `o` is an unset optional.
     template <typename Optional>
     constexpr bool is_nullopt(const Optional& o) noexcept
     {
         return !static_cast<bool>(o);
     }
+
+    /// @brief Returns `true` if `o` is an unset optional.
+    constexpr bool is_nullopt(const nullopt_t&) noexcept
+    {
+        return true;
+    }
+    // clang-format on
 }
