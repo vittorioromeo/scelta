@@ -4,23 +4,6 @@
 
 #pragma once
 
-#include "../utils/returns.hpp"
-#include "./dispatch.hpp"
-
-namespace scelta::traits::optional
-{
-    template <typename>
-    struct access
-    {
-        // clang-format off
-        template <typename Optional>
-        constexpr auto operator()(Optional&& o)
-            SCELTA_RETURNS(
-                *FWD(o)
-            )
-        // clang-format on
-    };
-
-    template <typename T>
-    inline constexpr traits::impl::dispatch<access<T>> access_v{};
-}
+#include "./optional/access.hpp"
+#include "./optional/make.hpp"
+#include "./optional/make_unset.hpp"

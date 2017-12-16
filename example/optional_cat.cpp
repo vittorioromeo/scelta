@@ -17,51 +17,63 @@ bool success()
 template <typename T>
 using optional = example::optional<T>;
 
-struct image_view
+struct cymk_image_view
 {
 };
 
-optional<image_view> simulate_operation()
+struct rgb_image_view
 {
-    return success() ? optional<image_view>{image_view{}}
+};
+
+template <typename T>
+optional<T> simulate_operation()
+{
+    return success() ? optional<T>{T{}}
                      : scelta::nullopt;
 }
 
-optional<image_view> crop_to_cat(image_view)
+optional<rgb_image_view> to_rgb(cymk_image_view)
+{
+    std::cout << "converting...\n";
+    return simulate_operation<rgb_image_view>();
+}
+
+optional<rgb_image_view> crop_to_cat(rgb_image_view)
 {
     std::cout << "cropping...\n";
-    return simulate_operation();
+    return simulate_operation<rgb_image_view>();
 }
 
-optional<image_view> add_bow_tie(image_view)
+optional<rgb_image_view> add_bow_tie(rgb_image_view)
 {
     std::cout << "adding bow tie...\n";
-    return simulate_operation();
+    return simulate_operation<rgb_image_view>();
 }
 
-optional<image_view> make_eyes_sparkle(image_view)
+optional<rgb_image_view> make_eyes_sparkle(rgb_image_view)
 {
     std::cout << "making eyes sparkle...\n";
-    return simulate_operation();
+    return simulate_operation<rgb_image_view>();
 }
 
-image_view make_smaller(image_view)
+rgb_image_view make_smaller(rgb_image_view)
 {
     std::cout << "making smaller...\n";
     return {};
 }
 
-image_view add_rainbow(image_view)
+rgb_image_view add_rainbow(rgb_image_view)
 {
     std::cout << "adding rainbow...\n";
     return {};
 }
 
 // clang-format off
-optional<image_view> get_cute_cat(image_view img)
+optional<rgb_image_view> get_cute_cat(cymk_image_view img)
 {
     using namespace scelta::infix;
-    return crop_to_cat(img)
+    return to_rgb(img)
+         | and_then(crop_to_cat)
          | and_then(add_bow_tie)
          | and_then(make_eyes_sparkle)
          | map(make_smaller)

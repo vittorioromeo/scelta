@@ -91,9 +91,9 @@ namespace test
         f(TestCase<boost::optional>{});
 #endif
 
-#if defined(SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE)
-        f(TestCase<type_safe::optional>{});
-#endif
+// #if defined(SCELTA_SUPPORT_OPTIONAL_TYPE_SAFE)
+//         f(TestCase<type_safe::optional>{});
+// #endif
 
 #if defined(SCELTA_SUPPORT_OPTIONAL_TL)
         f(TestCase<tl::optional>{});

@@ -9,4 +9,5 @@
 #include "./meta/fn_ref_wrapper.hpp"
 #include "./meta/forward_like.hpp"
 #include "./meta/replace_all.hpp"
+#include "./meta/type_wrapper.hpp"
 #include "./meta/y_combinator.hpp"
