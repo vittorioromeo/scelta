@@ -13,17 +13,20 @@ namespace scelta::infix
         template <typename F>
         struct infix_f : F
         {
-            constexpr infix_f(F&& f) : F{FWD(f)}
+            constexpr infix_f(F&& f) noexcept(noexcept(F{FWD(f)}))
+                : F{FWD(f)}
             {
             }
         };
     }
 
+    // clang-format off
     template <typename Optional, typename F>
     constexpr auto operator|(Optional&& o, detail::infix_f<F>&& f)
-    {
-        return f(FWD(o));
-    }
+        SCELTA_RETURNS(
+           f(FWD(o))
+        )
+    // clang-format on
 
 #define SCELTA_DEFINE_INFIX(name)                                              \
     template <typename... Ts>                                                  \

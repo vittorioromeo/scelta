@@ -13,6 +13,11 @@ TEST_MAIN()
     with_all_optional_implementations<int>( //
         [](auto make)                       //
         {
+            auto make_other = [](auto x)
+            {
+                return ::scelta::make_like<decltype(make())>(x);
+            };
+
             // map_or_else, set
             {
                 auto f_def = [&]{ return 42; };
@@ -31,6 +36,15 @@ TEST_MAIN()
                 EXPECT_TRUE((o | scelta::infix::map_or_else(f_def, f)) == 42);
             }
 
+            // map_or_else with a different type
+            {
+                auto f_def = [&]{ return 'b'; };
+                auto f = [](int){ return 'a'; };
+                auto o = make(0);
+                EXPECT_TRUE(scelta::map_or_else(o, f_def, f) == make_other('a'));
+                EXPECT_TRUE((o | scelta::infix::map_or_else(f_def, f)) == make_other('a'));
+            }
+
             // map_or, set
             {
                 auto f = [](int x){ return x + 1; };
@@ -45,6 +59,14 @@ TEST_MAIN()
                 auto o = make();
                 EXPECT_TRUE(scelta::map_or(o, 42, f) == 42);
                 EXPECT_TRUE((o | scelta::infix::map_or(42, f)) == 42);
+            }
+
+            // map_or with a different type
+            {
+                auto f = [](int){ return 'a'; };
+                auto o = make(0);
+                EXPECT_TRUE(scelta::map_or(o, 'x', f) == make_other('a'));
+                EXPECT_TRUE((o | scelta::infix::map_or('x', f)) == make_other('a'));
             }
 
             // map, set
@@ -63,6 +85,13 @@ TEST_MAIN()
                 EXPECT_TRUE((o | scelta::infix::map(f)) == make());
             }
 
+            // map to a different type
+            {
+                auto o = make(0);
+                auto f = [](int){ return 'a'; };
+                EXPECT_TRUE(scelta::map(o, f) == make_other('a'));
+            }
+
             // and_then, set
             {
                 auto f = [&](int x){ return make(x + 1); };
@@ -79,20 +108,28 @@ TEST_MAIN()
                 EXPECT_TRUE((o | scelta::infix::and_then(f)) == make());
             }
 
+            // and_then with a different type
+            {
+                auto f = [&](int){ return make_other('a'); };
+                auto o = make(0);
+                EXPECT_TRUE(scelta::and_then(o, f) == make_other('a'));
+                EXPECT_TRUE((o | scelta::infix::and_then(f)) == make_other('a'));
+            }
+
             // and_, set
             {
                 auto a = make(10);
-                auto b = make('a');
+                auto b = make_other('a');
                 EXPECT_TRUE(scelta::and_(a, b) == b);
-                EXPECT_TRUE((a | scelta::infix::and_(b)) == make(b));
+                EXPECT_TRUE((a | scelta::infix::and_(b)) == make_other('a'));
             }
 
             // and_, unset
             {
                 auto a = make();
-                auto b = make('a');
-                EXPECT_TRUE(scelta::and_(a, b) == make());
-                EXPECT_TRUE((a | scelta::infix::and_(b)) == make());
+                auto b = make_other('a');
+                EXPECT_TRUE(scelta::and_(a, b) == decltype(b){});
+                EXPECT_TRUE((a | scelta::infix::and_(b)) == decltype(b){});
             }
 
             // or_else, set

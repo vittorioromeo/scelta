@@ -22,14 +22,14 @@ namespace scelta
             {
             }
 
-#define DEFINE_BOUND_VISITOR_CALL(m_refq)                                  \
-    template <typename... Variants>                                        \
-    constexpr auto operator()(Variants&&... variants) m_refq               \
-    SCELTA_NOEXCEPT_AND_TRT(                                               \
+#define DEFINE_BOUND_VISITOR_CALL(m_refq)                                                \
+    template <typename... Variants>                                                      \
+    constexpr auto operator()(Variants&&... variants) m_refq                             \
+    SCELTA_NOEXCEPT_AND_TRT(                                                             \
         ::scelta::nonrecursive::visit(std::declval<Visitor m_refq>(), FWD(variants)...)) \
-    {                                                                      \
+    {                                                                                    \
         return ::scelta::nonrecursive::visit(                                            \
-            static_cast<Visitor m_refq>(*this), FWD(variants)...);         \
+            static_cast<Visitor m_refq>(*this), FWD(variants)...);                       \
     }
 
             DEFINE_BOUND_VISITOR_CALL(&)
