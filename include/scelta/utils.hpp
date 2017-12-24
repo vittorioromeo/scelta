@@ -9,6 +9,7 @@
 #include "./utils/fwd.hpp"
 #include "./utils/homogenizer.hpp"
 #include "./utils/linear_overload.hpp"
+#include "./utils/nothing.hpp"
 #include "./utils/nullopt.hpp"
 #include "./utils/optional_monadic.hpp"
 #include "./utils/optional_monadic_infix.hpp"

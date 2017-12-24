@@ -9,38 +9,21 @@
 #include "../traits/adt/valid.hpp"
 #include "./access_optional.hpp"
 #include "./assert.hpp"
+#include "./nothing.hpp"
 #include "./nullopt.hpp"
 #include "./optional_utils.hpp"
 #include "./returns.hpp"
 
-// TODO: remove?
 namespace scelta::detail
 {
-    template <typename Optional>
-    struct change_item_type;
-
-    template <template <typename...> typename Optional, typename T,
-        typename... Ts>
-    struct change_item_type<Optional<T, Ts...>>
-    {
-        template <typename U>
-        using apply = Optional<U, Ts...>;
-    };
-
-    template <typename Optional, typename T>
-    using change_item_type_t = typename change_item_type<Optional>::template apply<T>;
-
-    template <typename Optional>
-    using optional_item_type_t =
-        decltype(impl::access_optional(std::declval<Optional>()));
-
-    template <typename Optional, typename F>
-    using unwrap_optional_invoke_result_t =
-        std::invoke_result_t<F, optional_item_type_t<Optional>>;
-
-    template <typename Optional, typename F>
-    using map_result_t = change_item_type_t<std::decay_t<Optional>,
-        unwrap_optional_invoke_result_t<Optional, F>>;
+    // clang-format off
+    /// @brief Invokes `f(*o)`, returning `nothing` instead of `void`.
+    template <typename F, typename Optional>
+    constexpr auto invoke_access(F&& f, Optional&& o)
+        SCELTA_RETURNS(
+            detail::invoke_void_to_nothing(FWD(f), impl::access_optional(FWD(o)))
+        )
+    // clang-format on
 }
 
 namespace scelta
@@ -54,8 +37,8 @@ namespace scelta
     template <typename Optional, typename FD, typename F>
     constexpr auto map_or_else(Optional&& o, FD&& f_def, F&& f)
     SCELTA_RETURNS(
-        is_nullopt(o) ? make_like<Optional>(FWD(f_def)())
-                      : make_like<Optional>(FWD(f)(impl::access_optional(FWD(o))))
+        is_nullopt(o) ? make_like<Optional>(detail::invoke_void_to_nothing(FWD(f_def)))
+                      : make_like<Optional>(detail::invoke_access(FWD(f), FWD(o)))
     )
 
     /// @brief Returns `f(*o)` if `o` is set, `def` otherwise.
@@ -67,7 +50,7 @@ namespace scelta
     constexpr auto map_or(Optional&& o, T&& def, F&& f)
     SCELTA_RETURNS(
         is_nullopt(o) ? make_like<Optional>(FWD(def))
-                      : make_like<Optional>(FWD(f)(impl::access_optional(FWD(o))))
+                      : make_like<Optional>(detail::invoke_access(FWD(f), FWD(o)))
     )
 
     /// @brief Returns `Optional{f(*o)}` if `o` is set, an empty
@@ -78,8 +61,8 @@ namespace scelta
     template <typename Optional, typename F>
     constexpr auto map(Optional&& o, F&& f)
     SCELTA_RETURNS(
-         is_nullopt(o) ? make_unset_like<Optional, decltype(FWD(f)(impl::access_optional(FWD(o))))>()
-                       : make_like<Optional>(FWD(f)(impl::access_optional(FWD(o))))
+         is_nullopt(o) ? make_unset_like<Optional, decltype(detail::invoke_access(FWD(f), FWD(o)))>()
+                       : make_like<Optional>(detail::invoke_access(FWD(f), FWD(o)))
     )
 
     /// @brief Returns `f(*o)` if `o` is set, an empty `Optional`

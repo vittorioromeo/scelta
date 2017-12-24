@@ -45,6 +45,32 @@ TEST_MAIN()
                 EXPECT_TRUE((o | scelta::infix::map_or_else(f_def, f)) == make_other('a'));
             }
 
+            // map_or_else without return type
+            {
+                bool side_effect = false;
+                auto o = make(0);
+                auto d = []{};
+                auto f = [&](int){ side_effect = true; };
+                scelta::map_or_else(o, d, f);
+                EXPECT_TRUE(side_effect);
+            }
+            {
+                bool side_effect = false;
+                auto o = make(0);
+                auto d = []{};
+                auto f = [&](int){ side_effect = true; };
+                o | scelta::infix::map_or_else(d, f);
+                EXPECT_TRUE(side_effect);
+            }
+            {
+                bool side_effect = false;
+                auto o = make();
+                auto d = []{};
+                auto f = [&](int){ side_effect = true; };
+                scelta::map_or_else(o, d, f);
+                EXPECT_FALSE(side_effect);
+            }
+
             // map_or, set
             {
                 auto f = [](int x){ return x + 1; };
@@ -90,6 +116,29 @@ TEST_MAIN()
                 auto o = make(0);
                 auto f = [](int){ return 'a'; };
                 EXPECT_TRUE(scelta::map(o, f) == make_other('a'));
+            }
+
+            // map without return type
+            {
+                bool side_effect = false;
+                auto o = make(0);
+                auto f = [&](int){ side_effect = true; };
+                scelta::map(o, f);
+                EXPECT_TRUE(side_effect);
+            }
+            {
+                bool side_effect = false;
+                auto o = make(0);
+                auto f = [&](int){ side_effect = true; };
+                o | scelta::infix::map(f);
+                EXPECT_TRUE(side_effect);
+            }
+            {
+                bool side_effect = false;
+                auto o = make();
+                auto f = [&](int){ side_effect = true; };
+                scelta::map(o, f);
+                EXPECT_FALSE(side_effect);
             }
 
             // and_then, set
