@@ -13,12 +13,6 @@ include_directories(${SCELTA_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
-file(GLOB_RECURSE INSTALL_FILES_LIST "${CMAKE_CURRENT_LIST_DIR}/scelta/testbed/*.hpp")
-file(GLOB_RECURSE INSTALL_FILES_LIST "${CMAKE_CURRENT_LIST_DIR}/scelta/*.hpp")
-add_library(HEADER_ONLY_TARGET3 STATIC ${INSTALL_FILES_LIST})
-set_source_files_properties(${INSTALL_FILES_LIST} PROPERTIES HEADER_FILE_ONLY 1)
-set_target_properties(HEADER_ONLY_TARGET3 PROPERTIES LINKER_LANGUAGE CXX)
-
 # Generate all the unit tests.
 vrm_cmake_generate_unit_tests_glob("${SCELTA_SOURCE_DIR}/test/*.cpp")
 

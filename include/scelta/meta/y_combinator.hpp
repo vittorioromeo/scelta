@@ -26,7 +26,7 @@ namespace scelta::meta
 
 #define DEFINE_CALL_OPERATOR(m_refq)                                          \
     template <typename... Ts>                                                 \
-    constexpr auto operator()(Ts&&... xs) m_refq SCELTA_NOEXCEPT_AND_TRT(     \
+    constexpr auto operator()(Ts&&... xs) m_refq -> decltype(     \
         std::declval<F m_refq>()(                                             \
             std::declval<fn_ref_wrapper<y_combinator m_refq>>(), FWD(xs)...)) \
     {                                                                         \
