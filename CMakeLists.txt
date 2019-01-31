@@ -42,3 +42,7 @@ add_subdirectory(example)
 
 # Create header-only install target (automatically glob)
 vrm_cmake_header_only_install_glob("${SCELTA_INC_DIR}" "include")
+
+# Allow parent projects to depend on Scelta by adding
+# `scelta::headers` to the list of target_link_libraries.
+add_library( scelta::headers ALIAS HEADER_ONLY_TARGET )
