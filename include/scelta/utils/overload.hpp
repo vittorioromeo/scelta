@@ -26,6 +26,6 @@ namespace scelta
     }
 
     template <typename... Ts>
-    constexpr auto overload(Ts&&... xs) SCELTA_RETURNS(
+    [[nodiscard]] constexpr auto overload(Ts&&... xs) SCELTA_RETURNS(
         impl::overloader<std::remove_reference_t<Ts>...>{FWD(xs)...})
 }

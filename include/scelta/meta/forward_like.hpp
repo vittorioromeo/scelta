@@ -18,6 +18,6 @@ namespace scelta::meta
 
     /// @brief Forwards `x` with the same value category as `Source`.
     template <typename Source, typename T>
-    auto forward_like(T&& x)
+    [[nodiscard]] auto forward_like(T&& x)
         SCELTA_RETURNS(static_cast<as_if_forwarded<Source, T&&>>(x))
 }

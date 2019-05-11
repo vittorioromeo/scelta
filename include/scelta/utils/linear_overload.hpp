@@ -65,6 +65,6 @@ public:                                                                       \
     }
 
     template <typename... Ts>
-    constexpr auto linear_overload(Ts&&... xs) SCELTA_RETURNS(
+    [[nodiscard]] constexpr auto linear_overload(Ts&&... xs) SCELTA_RETURNS(
         impl::linear_overloader<std::remove_reference_t<Ts>...>{FWD(xs)...})
 }

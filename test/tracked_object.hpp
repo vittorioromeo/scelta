@@ -156,13 +156,12 @@ namespace testing
         class matcher_branch_logic
         {
         private:
-            matcher& _m;
             matcher_branch& _mb;
             const int& _v;
 
         public:
-            matcher_branch_logic(matcher& m, matcher_branch& mb, const int& v)
-                : _m{m}, _mb{mb}, _v{v}
+            matcher_branch_logic(matcher_branch& mb, const int& v)
+                : _mb{mb}, _v{v}
             {
             }
 
@@ -219,7 +218,7 @@ namespace testing
     auto name() noexcept                                                    \
     {                                                                       \
         get_ostream() << "Checking " << _id << "'s " << #name << " to be "; \
-        return matcher_branch_logic{_m, *this, _s.member};                  \
+        return matcher_branch_logic{*this, _s.member};                      \
     }                                                                       \
                                                                             \
     auto name(int x) noexcept                                               \

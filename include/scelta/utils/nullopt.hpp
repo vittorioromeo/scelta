@@ -31,13 +31,13 @@ namespace scelta
 
     /// @brief Returns `true` if `o` is an unset optional.
     template <typename Optional>
-    constexpr bool is_nullopt(const Optional& o) noexcept
+    [[nodiscard]] constexpr bool is_nullopt(const Optional& o) noexcept
     {
         return !static_cast<bool>(o);
     }
 
     /// @brief Returns `true` if `o` is an unset optional.
-    constexpr bool is_nullopt(const nullopt_t&) noexcept
+    [[nodiscard]] constexpr bool is_nullopt(const nullopt_t&) noexcept
     {
         return true;
     }
